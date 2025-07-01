@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "textual>=3.5.0",
+    "textual-enhanced>=0.13.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
