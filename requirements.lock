@@ -29,7 +29,10 @@ rich==14.0.0
 textual==3.5.0
     # via dhv
     # via textual-enhanced
+    # via textual-fspicker
 textual-enhanced==0.13.0
+    # via dhv
+textual-fspicker==0.4.1
     # via dhv
 typing-extensions==4.14.0
     # via textual

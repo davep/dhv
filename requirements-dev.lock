@@ -83,9 +83,12 @@ textual==3.5.0
     # via dhv
     # via textual-dev
     # via textual-enhanced
+    # via textual-fspicker
     # via textual-serve
 textual-dev==1.7.0
 textual-enhanced==0.13.0
+    # via dhv
+textual-fspicker==0.4.1
     # via dhv
 textual-serve==1.1.2
     # via textual-dev
