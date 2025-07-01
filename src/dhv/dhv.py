@@ -19,6 +19,7 @@ from .data import (
     load_configuration,
     update_configuration,
 )
+from .screens import Main
 
 ##############################################################################
 class DHV(EnhancedApp[None]):
@@ -56,6 +57,8 @@ class DHV(EnhancedApp[None]):
         Args:
             The command line arguments passed to the application.
         """
+        self._arguments = arguments
+        """The command line arguments passed to the application."""
         super().__init__()
         configuration = load_configuration()
         if configuration.theme is not None:
@@ -69,6 +72,14 @@ class DHV(EnhancedApp[None]):
         """Save the application's theme when it's changed."""
         with update_configuration() as config:
             config.theme = self.theme
+
+    def get_default_screen(self) -> Main:
+        """Get the default screen for the application.
+
+        Returns:
+            The main screen.
+        """
+        return Main(self._arguments)
 
 
 ### dhv.py ends here
