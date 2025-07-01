@@ -5,7 +5,9 @@ description = "Coming eventually"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
-dependencies = []
+dependencies = [
+    "textual>=3.5.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
@@ -17,7 +19,12 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "pre-commit>=4.2.0",
+    "mypy>=1.16.1",
+    "textual-dev>=1.7.0",
+    "codespell>=2.4.1",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
