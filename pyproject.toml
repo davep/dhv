@@ -9,9 +9,13 @@ dependencies = [
     "textual>=3.5.0",
     "textual-enhanced>=0.13.0",
     "textual-fspicker>=0.4.1",
+    "xdg-base-dirs>=6.0.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
+
+[project.scripts]
+dhv = "dhv.__main__:main"
 
 [build-system]
 # https://github.com/astral-sh/rye/issues/1446
