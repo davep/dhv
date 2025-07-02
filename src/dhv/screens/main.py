@@ -12,6 +12,7 @@ from textual_enhanced.screen import EnhancedScreen
 ##############################################################################
 # Textual imports.
 from textual.app import ComposeResult
+from textual.reactive import var
 from textual.widgets import Footer, Header
 
 ##############################################################################
@@ -32,6 +33,9 @@ class Main(EnhancedScreen[None]):
     }
     """
 
+    code: var[str | None] = var(None)
+    """The code to disassemble."""
+
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
 
@@ -46,13 +50,12 @@ class Main(EnhancedScreen[None]):
         """Compose the content of the screen."""
         yield Header()
         with Horizontal():
-            yield Source()
-            yield Disassembly()
+            yield Source().data_bind(Main.code)
+            yield Disassembly().data_bind(Main.code)
         yield Footer()
 
     def on_mount(self) -> None:
         from pathlib import Path
-        self.query_one(Source).code = Path(__file__).read_text()
-        self.query_one(Disassembly).code = Path(__file__).read_text()
+        self.code = Path(__file__).read_text()
 
 ### main.py ends here
