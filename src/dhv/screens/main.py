@@ -5,21 +5,22 @@
 from argparse import Namespace
 
 ##############################################################################
-# Textual enhanced imports.
-from textual import on
-from textual.containers import Horizontal
-from textual_enhanced.screen import EnhancedScreen
-
-##############################################################################
 # Textual imports.
+from textual import on
 from textual.app import ComposeResult
+from textual.containers import Horizontal
 from textual.reactive import var
 from textual.widgets import Footer, Header
+
+##############################################################################
+# Textual enhanced imports.
+from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
 # Local imports.
 from .. import __version__
 from ..widgets import Disassembly, Source
+
 
 ##############################################################################
 class Main(EnhancedScreen[None]):
@@ -33,6 +34,8 @@ class Main(EnhancedScreen[None]):
         height: 1fr;
     }
     """
+
+    COMMAND_MESSAGES = ()
 
     code: var[str | None] = var(None)
     """The code to disassemble."""
@@ -57,6 +60,7 @@ class Main(EnhancedScreen[None]):
 
     def on_mount(self) -> None:
         from pathlib import Path
+
         self.code = Path(__file__).read_text()
 
     @on(Disassembly.InstructionHighlighted)

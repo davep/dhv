@@ -9,6 +9,7 @@ from dis import Instruction
 from textual.reactive import var
 from textual.widgets import TextArea
 
+
 ##############################################################################
 class Source(TextArea):
     """Widget that displays Python source code."""
@@ -18,7 +19,13 @@ class Source(TextArea):
 
     def __init__(self) -> None:
         """Initialise the widget."""
-        super().__init__("", language="python", soft_wrap=False, read_only=True, show_line_numbers=True)
+        super().__init__(
+            "",
+            language="python",
+            soft_wrap=False,
+            read_only=True,
+            show_line_numbers=True,
+        )
 
     def _watch_code(self) -> None:
         """React to the code being changed."""
@@ -32,5 +39,6 @@ class Source(TextArea):
         """
         if instruction.line_number:
             self.select_line(instruction.line_number - 1)
+
 
 ### source.py ends here

@@ -21,6 +21,7 @@ from .data import (
 )
 from .screens import Main
 
+
 ##############################################################################
 class DHV(EnhancedApp[None]):
     """The main application class."""

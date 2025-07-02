@@ -1,13 +1,11 @@
 app    := dhv
 src    := src/
-docs   := docs/
 run    := rye run
 test   := rye test
 python := $(run) python
 lint   := rye lint -- --select I
 fmt    := rye fmt
 mypy   := $(run) mypy
-mkdocs := $(run) mkdocs
 spell  := $(run) codespell
 
 ##############################################################################
@@ -50,40 +48,26 @@ resetup: realclean		# Recreate the virtual environment from scratch
 # Checking/testing/linting/etc.
 .PHONY: lint
 lint:				# Check the code for linting issues
-	$(lint) $(src) $(docs)
+	$(lint) $(src)
 
 .PHONY: codestyle
 codestyle:			# Is the code formatted correctly?
-	$(fmt) --check $(src) $(docs)
+	$(fmt) --check $(src)
 
 .PHONY: typecheck
 typecheck:			# Perform static type checks with mypy
-	$(mypy) --scripts-are-modules $(src) $(docs)
+	$(mypy) --scripts-are-modules $(src)
 
 .PHONY: stricttypecheck
 stricttypecheck:	        # Perform a strict static type checks with mypy
-	$(mypy) --scripts-are-modules --strict $(src) $(docs)
+	$(mypy) --scripts-are-modules --strict $(src)
 
 .PHONY: spellcheck
 spellcheck:			# Spell check the code
-	$(spell) *.md $(src) $(docs)
+	$(spell) *.md $(src)
 
 .PHONY: checkall
 checkall: spellcheck codestyle lint stricttypecheck # Check all the things
-
-##############################################################################
-# Documentation.
-.PHONY: docs
-docs: ready			# Generate the system documentation
-	$(mkdocs) build
-
-.PHONY: rtfm
-rtfm: ready			# Locally read the library documentation
-	$(mkdocs) serve
-
-.PHONY: publishdocs
-publishdocs: clean-docs ready	# Set up the docs for publishing
-	$(mkdocs) gh-deploy
 
 ##############################################################################
 # Package/publish.
@@ -111,11 +95,11 @@ repl:				# Start a Python REPL in the venv.
 
 .PHONY: delint
 delint:			# Fix linting issues.
-	$(lint) --fix $(src) $(docs)
+	$(lint) --fix $(src)
 
 .PHONY: pep8ify
 pep8ify:			# Reformat the code to be as PEP8 as possible.
-	$(fmt) $(src) $(docs)
+	$(fmt) $(src)
 
 .PHONY: tidy
 tidy: delint pep8ify		# Tidy up the code, fixing lint and format issues.
@@ -124,12 +108,8 @@ tidy: delint pep8ify		# Tidy up the code, fixing lint and format issues.
 clean-packaging:		# Clean the package building files
 	rm -rf dist
 
-.PHONY: clean-docs
-clean-docs:			# Clean up the documentation building files
-	rm -rf site .screenshot_cache
-
 .PHONY: clean
-clean: clean-packaging clean-docs # Clean the build directories
+clean: clean-packaging # Clean the build directories
 
 .PHONY: realclean
 realclean: clean		# Clean the venv and build directories

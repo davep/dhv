@@ -7,15 +7,15 @@ from dis import Bytecode, Instruction, opname
 from typing import Final, Self
 
 ##############################################################################
-# Python enhanced imports.
-from textual.message import Message
-from textual_enhanced.widgets import EnhancedOptionList
-
-##############################################################################
 # Textual imports.
 from textual import on
+from textual.message import Message
 from textual.reactive import var
 from textual.widgets.option_list import Option
+
+##############################################################################
+# Textual enhanced imports.
+from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
@@ -23,11 +23,12 @@ LINE_NUMBER_WIDTH: Final[int] = 6
 OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
 """Get the maximum length of an operation name."""
 
+
 ##############################################################################
 class Operation(Option):
     """The view of an operation."""
 
-    def __init__(self, operation: Instruction, show_opcode: bool=False) -> None:
+    def __init__(self, operation: Instruction, show_opcode: bool = False) -> None:
         """Initialise the object.
 
         Args:
@@ -39,7 +40,10 @@ class Operation(Option):
         label = f"[dim]{operation.label}:[/]\n" if operation.label else ""
         line_number = str(operation.line_number) if operation.starts_line else ""
         opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
-        super().__init__(f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}")
+        super().__init__(
+            f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}"
+        )
+
 
 ##############################################################################
 class Disassembly(EnhancedOptionList):
@@ -57,7 +61,10 @@ class Disassembly(EnhancedOptionList):
     def _add_operations(self) -> Self:
         self.clear_options()
         if self.code:
-            self.add_options(Operation(operation, self.show_opcodes) for operation in Bytecode(self.code, adaptive=self.adaptive))
+            self.add_options(
+                Operation(operation, self.show_opcodes)
+                for operation in Bytecode(self.code, adaptive=self.adaptive)
+            )
         return self
 
     def _watch_code(self) -> None:
@@ -83,7 +90,9 @@ class Disassembly(EnhancedOptionList):
         """The highlighted instruction."""
 
     @on(EnhancedOptionList.OptionHighlighted)
-    def _instruction_highlighted(self, message: EnhancedOptionList.OptionHighlighted) -> None:
+    def _instruction_highlighted(
+        self, message: EnhancedOptionList.OptionHighlighted
+    ) -> None:
         """Handle an instruction being highlighted.
 
         Args:
@@ -92,5 +101,6 @@ class Disassembly(EnhancedOptionList):
         message.stop()
         assert isinstance(message.option, Operation)
         self.post_message(self.InstructionHighlighted(message.option.operation))
+
 
 ### disassembly.py ends here
