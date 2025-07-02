@@ -6,7 +6,6 @@ from dis import Instruction
 
 ##############################################################################
 # Textual imports.
-from textual.reactive import var
 from textual.widgets import TextArea
 
 
@@ -14,22 +13,14 @@ from textual.widgets import TextArea
 class Source(TextArea):
     """Widget that displays Python source code."""
 
-    code: var[str | None] = var(None)
-    """The code to show."""
-
     def __init__(self) -> None:
         """Initialise the widget."""
         super().__init__(
             "",
             language="python",
             soft_wrap=False,
-            read_only=True,
             show_line_numbers=True,
         )
-
-    def _watch_code(self) -> None:
-        """React to the code being changed."""
-        self.text = self.code or ""
 
     def highlight(self, instruction: Instruction) -> None:
         """Highlight the given instruction.

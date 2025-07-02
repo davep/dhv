@@ -9,7 +9,6 @@ from argparse import Namespace
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Horizontal
-from textual.reactive import var
 from textual.widgets import Footer, Header
 
 ##############################################################################
@@ -37,9 +36,6 @@ class Main(EnhancedScreen[None]):
 
     COMMAND_MESSAGES = ()
 
-    code: var[str | None] = var(None)
-    """The code to disassemble."""
-
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
 
@@ -54,18 +50,17 @@ class Main(EnhancedScreen[None]):
         """Compose the content of the screen."""
         yield Header()
         with Horizontal():
-            yield Source().data_bind(Main.code)
-            yield Disassembly().data_bind(Main.code)
+            yield Source()
+            yield Disassembly()
         yield Footer()
-
-    def on_mount(self) -> None:
-        from pathlib import Path
-
-        self.code = Path(__file__).read_text()
 
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
         self.query_one(Source).highlight(message.instruction)
+
+    @on(Source.Changed)
+    def _code_changed(self) -> None:
+        self.query_one(Disassembly).code = self.query_one(Source).document.text
 
 
 ### main.py ends here

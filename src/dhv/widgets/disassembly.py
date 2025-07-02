@@ -49,6 +49,12 @@ class Operation(Option):
 class Disassembly(EnhancedOptionList):
     """Widget that displays Python code disassembly."""
 
+    DEFAULT_CSS = """
+    Disassembly.--error {
+        background: $error;
+    }
+    """
+
     code: var[str | None] = var(None)
     """The code to disassemble."""
 
@@ -59,13 +65,19 @@ class Disassembly(EnhancedOptionList):
     """Show adaptive output?"""
 
     def _add_operations(self) -> Self:
-        self.clear_options()
         if self.code:
-            self.add_options(
-                Operation(operation, self.show_opcodes)
-                for operation in Bytecode(self.code, adaptive=self.adaptive)
+            try:
+                operations = Bytecode(self.code, adaptive=self.adaptive)
+            except SyntaxError:
+                self.set_class(True, "--error")
+                return self
+            self.set_class(False, "--error")
+            self.clear_options()
+            return self.add_options(
+                Operation(operation, self.show_opcodes) for operation in operations
             )
-        return self
+        self.set_class(False, "--error")
+        return self.clear_options()
 
     def _watch_code(self) -> None:
         """React to the code being changed."""
