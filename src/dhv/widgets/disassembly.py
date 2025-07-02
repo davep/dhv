@@ -51,10 +51,13 @@ class Disassembly(EnhancedOptionList):
     show_opcodes: var[bool] = var(False)
     """Should we show the opcodes in the disassembly?"""
 
+    adaptive: var[bool] = var(False)
+    """Show adaptive output?"""
+
     def _add_operations(self) -> Self:
         self.clear_options()
         if self.code:
-            self.add_options(Operation(operation, self.show_opcodes) for operation in Bytecode(self.code))
+            self.add_options(Operation(operation, self.show_opcodes) for operation in Bytecode(self.code, adaptive=self.adaptive))
         return self
 
     def _watch_code(self) -> None:
@@ -64,6 +67,11 @@ class Disassembly(EnhancedOptionList):
 
     def _watch_show_opcodes(self) -> None:
         """React to the show opcodes flag being toggled."""
+        with self.preserved_highlight:
+            self._add_operations()
+
+    def _watch_adaptive(self) -> None:
+        """React to the adaptive flag being toggled."""
         with self.preserved_highlight:
             self._add_operations()
 
