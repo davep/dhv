@@ -56,7 +56,8 @@ class Main(EnhancedScreen[None]):
 
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
-        self.query_one(Source).highlight(message.instruction)
+        if self.focused != self.query_one(Source):
+            self.query_one(Source).highlight(message.instruction)
 
     @on(Source.Changed)
     def _code_changed(self) -> None:
