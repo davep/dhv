@@ -36,10 +36,10 @@ class Operation(Option):
         """
         self.operation = operation
         """The operation being displayed."""
-        # TODO: Label?
+        label = f"[dim]{operation.label}:[/]\n" if operation.label else ""
         line_number = str(operation.line_number) if operation.starts_line else ""
         opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
-        super().__init__(f"{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}")
+        super().__init__(f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}")
 
 ##############################################################################
 class Disassembly(EnhancedOptionList):
