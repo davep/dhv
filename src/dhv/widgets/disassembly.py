@@ -37,8 +37,16 @@ class Operation(Option):
         """
         self.operation = operation
         """The operation being displayed."""
-        label = f"[dim]{operation.label}:[/]\n" if operation.label else ""
-        line_number = str(operation.line_number) if operation.starts_line else ""
+        label = (
+            f"[bold italic i $accent]L{operation.label}:[/]\n"
+            if operation.label
+            else ""
+        )
+        line_number = (
+            str(operation.line_number)
+            if operation.starts_line and operation.line_number is not None
+            else ""
+        )
         opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
         super().__init__(
             f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}"
@@ -51,6 +59,7 @@ class Disassembly(EnhancedOptionList):
 
     DEFAULT_CSS = """
     Disassembly.--error {
+        color: $text-error;
         background: $error;
     }
     """
@@ -64,20 +73,28 @@ class Disassembly(EnhancedOptionList):
     adaptive: var[bool] = var(False)
     """Show adaptive output?"""
 
+    error: var[bool] = var(False)
+    """Is there an error with the code we've been given?"""
+
     def _add_operations(self) -> Self:
         if self.code:
             try:
                 operations = Bytecode(self.code, adaptive=self.adaptive)
             except SyntaxError:
-                self.set_class(True, "--error")
+                self.error = True
                 return self
-            self.set_class(False, "--error")
             self.clear_options()
-            return self.add_options(
+            self.add_options(
                 Operation(operation, self.show_opcodes) for operation in operations
             )
-        self.set_class(False, "--error")
-        return self.clear_options()
+        else:
+            self.clear_options()
+        self.error = False
+        return self
+
+    def _watch_error(self) -> None:
+        """React to the error state being toggled."""
+        self.set_class(self.error, "--error")
 
     def _watch_code(self) -> None:
         """React to the code being changed."""
