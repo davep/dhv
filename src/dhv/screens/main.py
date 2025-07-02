@@ -6,6 +6,7 @@ from argparse import Namespace
 
 ##############################################################################
 # Textual enhanced imports.
+from textual import on
 from textual.containers import Horizontal
 from textual_enhanced.screen import EnhancedScreen
 
@@ -57,5 +58,10 @@ class Main(EnhancedScreen[None]):
     def on_mount(self) -> None:
         from pathlib import Path
         self.code = Path(__file__).read_text()
+
+    @on(Disassembly.InstructionHighlighted)
+    def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
+        self.query_one(Source).highlight(message.instruction)
+
 
 ### main.py ends here

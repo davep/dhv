@@ -2,15 +2,18 @@
 
 ##############################################################################
 # Python imports.
+from dataclasses import dataclass
 from dis import Bytecode, Instruction, opname
 from typing import Final, Self
 
 ##############################################################################
 # Python enhanced imports.
+from textual.message import Message
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
 # Textual imports.
+from textual import on
 from textual.reactive import var
 from textual.widgets.option_list import Option
 
@@ -63,5 +66,23 @@ class Disassembly(EnhancedOptionList):
         """React to the show opcodes flag being toggled."""
         with self.preserved_highlight:
             self._add_operations()
+
+    @dataclass
+    class InstructionHighlighted(Message):
+        """Message posted when an instruction is highlighted."""
+
+        instruction: Instruction
+        """The highlighted instruction."""
+
+    @on(EnhancedOptionList.OptionHighlighted)
+    def _instruction_highlighted(self, message: EnhancedOptionList.OptionHighlighted) -> None:
+        """Handle an instruction being highlighted.
+
+        Args:
+            message: The message to handle.
+        """
+        message.stop()
+        assert isinstance(message.option, Operation)
+        self.post_message(self.InstructionHighlighted(message.option.operation))
 
 ### disassembly.py ends here

@@ -1,23 +1,36 @@
 """Widget for showing some Python source code."""
 
 ##############################################################################
-# Rich imports.
-from rich.syntax import Syntax
+# Python imports.
+from dis import Instruction
 
 ##############################################################################
 # Textual imports.
 from textual.reactive import var
-from textual.widgets import Static
+from textual.widgets import TextArea
 
 ##############################################################################
-class Source(Static):
+class Source(TextArea):
     """Widget that displays Python source code."""
 
     code: var[str | None] = var(None)
     """The code to show."""
 
+    def __init__(self) -> None:
+        """Initialise the widget."""
+        super().__init__("", language="python", soft_wrap=False, read_only=True, show_line_numbers=True)
+
     def _watch_code(self) -> None:
         """React to the code being changed."""
-        self.update("" if self.code is None else Syntax(self.code, lexer="python"))
+        self.text = self.code or ""
+
+    def highlight(self, instruction: Instruction) -> None:
+        """Highlight the given instruction.
+
+        Args:
+            instruction: The instruction to highlight.
+        """
+        if instruction.line_number:
+            self.select_line(instruction.line_number - 1)
 
 ### source.py ends here
