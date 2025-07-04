@@ -4,7 +4,12 @@
 # Python imports.
 from dataclasses import dataclass
 from dis import Bytecode, Instruction, opname
+from types import CodeType
 from typing import Final, Self
+
+##############################################################################
+# Rich imports.
+from rich.rule import Rule
 
 ##############################################################################
 # Textual imports.
@@ -22,6 +27,19 @@ LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
 OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
 """Get the maximum length of an operation name."""
+
+
+##############################################################################
+class Code(Option):
+    """Option that marks a new disassembly."""
+
+    def __init__(self, code: CodeType) -> None:
+        """Initialise the object.
+
+        Args:
+            code: The code that will follow.
+        """
+        super().__init__(Rule(f"@{hex(id(code))}", style="dim bold"))
 
 
 ##############################################################################
@@ -48,8 +66,13 @@ class Operation(Option):
             else ""
         )
         opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
+        arg = (
+            f"[dim]code@[/]{hex(id(operation.argval))}"
+            if isinstance(operation.argval, CodeType)
+            else operation.argrepr
+        )
         super().__init__(
-            f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {operation.argrepr}"
+            f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}"
         )
 
 
@@ -76,20 +99,22 @@ class Disassembly(EnhancedOptionList):
     error: var[bool] = var(False)
     """Is there an error with the code we've been given?"""
 
-    def _add_operations(self) -> Self:
-        if self.code:
-            try:
-                operations = Bytecode(self.code, adaptive=self.adaptive)
-            except SyntaxError:
-                self.error = True
-                return self
-            self.clear_options()
-            self.add_options(
-                Operation(operation, self.show_opcodes) for operation in operations
-            )
-        else:
-            self.clear_options()
+    def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
+        try:
+            operations = Bytecode(code, adaptive=self.adaptive)
+        except SyntaxError:
+            self.error = True
+            return self
         self.error = False
+        if fresh:
+            self.clear_options()
+        if isinstance(code, CodeType):
+            self.add_option(Code(code))
+        for operation in operations:
+            self.add_option(Operation(operation, self.show_opcodes))
+        for operation in operations:
+            if isinstance(operation.argval, CodeType):
+                self._add_operations(operation.argval)
         return self
 
     def _watch_error(self) -> None:
@@ -99,17 +124,17 @@ class Disassembly(EnhancedOptionList):
     def _watch_code(self) -> None:
         """React to the code being changed."""
         with self.preserved_highlight:
-            self._add_operations()
+            self._add_operations(self.code or "", True)
 
     def _watch_show_opcodes(self) -> None:
         """React to the show opcodes flag being toggled."""
         with self.preserved_highlight:
-            self._add_operations()
+            self._add_operations(self.code or "", True)
 
     def _watch_adaptive(self) -> None:
         """React to the adaptive flag being toggled."""
         with self.preserved_highlight:
-            self._add_operations()
+            self._add_operations(self.code or "", True)
 
     @dataclass
     class InstructionHighlighted(Message):
@@ -128,8 +153,8 @@ class Disassembly(EnhancedOptionList):
             message: The message to handle.
         """
         message.stop()
-        assert isinstance(message.option, Operation)
-        self.post_message(self.InstructionHighlighted(message.option.operation))
+        if isinstance(message.option, Operation):
+            self.post_message(self.InstructionHighlighted(message.option.operation))
 
 
 ### disassembly.py ends here
