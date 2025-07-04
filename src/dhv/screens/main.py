@@ -81,11 +81,13 @@ class Main(EnhancedScreen[None]):
 
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
+        """Handle a request to highlight some code."""
         if self.focused != self.query_one(Source):
             self.query_one(Source).highlight(message.instruction)
 
     @on(Source.Changed)
     def _code_changed(self) -> None:
+        """Handle the fact that the code has changed."""
         self.query_one(Disassembly).code = self.query_one(Source).document.text
 
 
