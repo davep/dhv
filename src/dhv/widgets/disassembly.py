@@ -9,6 +9,7 @@ from typing import Final, Self
 
 ##############################################################################
 # Rich imports.
+from rich.markup import escape
 from rich.rule import Rule
 
 ##############################################################################
@@ -71,7 +72,7 @@ class Operation(Option):
         arg = (
             f"[dim]code@[/]{hex(id(operation.argval))}"
             if isinstance(operation.argval, CodeType)
-            else operation.argrepr
+            else escape(operation.argrepr)
         )
         super().__init__(
             f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/] {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}"
