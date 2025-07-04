@@ -74,7 +74,7 @@ class Operation(Option):
             else operation.argrepr
         )
         super().__init__(
-            f"{label}{line_number:{LINE_NUMBER_WIDTH}} {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}"
+            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/] {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}"
         )
 
 
