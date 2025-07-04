@@ -28,9 +28,16 @@ class Main(EnhancedScreen[None]):
     TITLE = f"DHV v{__version__}"
 
     DEFAULT_CSS = """
-    Main > Horizontal > * {
+    Source, Disassembly {
         width: 1fr;
         height: 1fr;
+        border: none;
+        border-left: solid $panel;
+        &:focus {
+            border: none;
+            border-left: solid $border;
+            background: $panel 80%;
+        }
     }
     """
 
