@@ -39,7 +39,9 @@ class Code(Option):
         Args:
             code: The code that will follow.
         """
-        super().__init__(Rule(f"@{hex(id(code))}", style="dim bold"))
+        super().__init__(
+            Rule(f"@{hex(id(code))}", style="dim bold"), id=f"{hex(id(code))}"
+        )
 
 
 ##############################################################################
@@ -155,6 +157,21 @@ class Disassembly(EnhancedOptionList):
         message.stop()
         if isinstance(message.option, Operation):
             self.post_message(self.InstructionHighlighted(message.option.operation))
+
+    @on(EnhancedOptionList.OptionSelected)
+    def _maybe_jump_to_code(self, message: EnhancedOptionList.OptionSelected) -> None:
+        """Maybe jump to a selected bit of code.
+
+        Args:
+            message: The message to handle.
+        """
+        message.stop()
+        if isinstance(message.option, Operation) and isinstance(
+            message.option.operation.argval, CodeType
+        ):
+            self.highlighted = self.get_option_index(
+                hex(id(message.option.operation.argval))
+            )
 
 
 ### disassembly.py ends here
