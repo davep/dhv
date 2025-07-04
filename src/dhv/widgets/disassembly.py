@@ -17,7 +17,7 @@ from rich.rule import Rule
 from textual import on
 from textual.message import Message
 from textual.reactive import var
-from textual.widgets.option_list import Option
+from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
@@ -49,18 +49,27 @@ class Code(Option):
 class Operation(Option):
     """The view of an operation."""
 
-    def __init__(self, operation: Instruction, show_opcode: bool = False) -> None:
+    def __init__(
+        self,
+        operation: Instruction,
+        *,
+        show_opcode: bool = False,
+        code: CodeType | None = None,
+    ) -> None:
         """Initialise the object.
 
         Args:
             operation: The operation.
             show_opcode: Show the opcode in the display?
+            code: The code that the operation came from.
         """
-        self.operation = operation
+        self._operation = operation
         """The operation being displayed."""
+        self._code = code
+        """The code the operation came from."""
         label = (
             f"[bold italic i $accent]L{operation.label}:[/]\n"
-            if operation.label
+            if operation.is_jump_target
             else ""
         )
         line_number = (
@@ -75,8 +84,34 @@ class Operation(Option):
             else escape(operation.argrepr)
         )
         super().__init__(
-            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/] {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}"
+            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/] {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}",
+            id=self.make_id(operation.offset, code),
         )
+
+    @property
+    def operation(self) -> Instruction:
+        """The operation being displayed."""
+        return self._operation
+
+    @property
+    def code(self) -> CodeType | None:
+        """The code that the operation belongs to."""
+        return self._code
+
+    @staticmethod
+    def make_id(offset: int, code: CodeType | None = None) -> str | None:
+        """Make an ID for the given operation.
+
+        Args:
+           offset: The offset of the instruction.
+           code: The code the instruction came from.
+
+        Returns:
+            The ID for the operation, or [`None`] if one isn't needed.
+        """
+        if code:
+            return f"operation-{hex(id(code))}-{offset}"
+        return f"operation-{offset}"
 
 
 ##############################################################################
@@ -103,6 +138,15 @@ class Disassembly(EnhancedOptionList):
     """Is there an error with the code we've been given?"""
 
     def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
+        """Add the operations from the given code.
+
+        Args:
+            code: The code to add the operations from.
+            fresh: Is this a fresh add; should we clear the display?
+
+        Returns:
+            Self.
+        """
         try:
             operations = Bytecode(code, adaptive=self.adaptive)
         except SyntaxError:
@@ -114,7 +158,11 @@ class Disassembly(EnhancedOptionList):
         if isinstance(code, CodeType):
             self.add_option(Code(code))
         for operation in operations:
-            self.add_option(Operation(operation, self.show_opcodes))
+            self.add_option(
+                Operation(
+                    operation, show_opcode=self.show_opcodes, code=operations.codeobj
+                )
+            )
         for operation in operations:
             if isinstance(operation.argval, CodeType):
                 self._add_operations(operation.argval)
@@ -167,12 +215,23 @@ class Disassembly(EnhancedOptionList):
             message: The message to handle.
         """
         message.stop()
-        if isinstance(message.option, Operation) and isinstance(
-            message.option.operation.argval, CodeType
-        ):
-            self.highlighted = self.get_option_index(
-                hex(id(message.option.operation.argval))
-            )
+        if isinstance(message.option, Operation):
+            if isinstance(message.option.operation.argval, CodeType):
+                self.highlighted = self.get_option_index(
+                    hex(id(message.option.operation.argval))
+                )
+            elif message.option.operation.jump_target is not None:
+                if jump_id := Operation.make_id(
+                    message.option.operation.jump_target, message.option.code
+                ):
+                    try:
+                        self.highlighted = self.get_option_index(jump_id)
+                    except OptionDoesNotExist:
+                        self.notify(
+                            "Unable to find that jump location",
+                            title="Error",
+                            severity="error",
+                        )
 
 
 ### disassembly.py ends here
