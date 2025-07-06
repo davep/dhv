@@ -10,6 +10,10 @@ from textual_enhanced.commands import (
     Quit,
 )
 
+##############################################################################
+# Local imports.
+from ..commands import NewCode
+
 
 ##############################################################################
 class MainCommands(CommandsProvider):
@@ -24,6 +28,7 @@ class MainCommands(CommandsProvider):
         yield ChangeTheme()
         yield Help()
         yield Quit()
+        yield NewCode()
 
 
 ### main.py ends here

@@ -19,6 +19,7 @@ from textual_enhanced.screen import EnhancedScreen
 ##############################################################################
 # Local imports.
 from .. import __version__
+from ..commands import NewCode
 from ..providers import MainCommands
 from ..widgets import Disassembly, Source
 
@@ -47,9 +48,10 @@ class Main(EnhancedScreen[None]):
         # Keep these together as they're bound to function keys and destined
         # for the footer.
         Help,
+        Quit,
+        NewCode,
         # Everything else.
         ChangeTheme,
-        Quit,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
@@ -89,6 +91,10 @@ class Main(EnhancedScreen[None]):
     def _code_changed(self) -> None:
         """Handle the fact that the code has changed."""
         self.query_one(Disassembly).code = self.query_one(Source).document.text
+
+    def action_new_code_command(self) -> None:
+        """Handle the new code command."""
+        self.query_one(Source).load_text("")
 
 
 ### main.py ends here
