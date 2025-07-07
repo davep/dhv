@@ -31,6 +31,9 @@ class Configuration:
     horizontal_layout: bool = True
     """Should the main screen use horizontal layout?"""
 
+    show_opcodes: bool = False
+    """Show the numeric opcodes in the disassembly?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:
