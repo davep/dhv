@@ -12,7 +12,7 @@ dependencies = [
     "xdg-base-dirs>=6.0.2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.11"
 
 [project.scripts]
 dhv = "dhv.__main__:main"
