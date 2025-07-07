@@ -136,6 +136,14 @@ class Disassembly(EnhancedOptionList):
         )
     ]
 
+    HELP = """
+    ## Disassembly
+
+    This panel is the disassembly of the Python source code.
+
+    The following keys can be used as shortcuts in this panel:
+    """
+
     code: var[str | None] = var(None)
     """The code to disassemble."""
 
