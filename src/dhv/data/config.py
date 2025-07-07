@@ -25,6 +25,9 @@ class Configuration:
     bindings: dict[str, str] = field(default_factory=dict)
     """Command keyboard binding overrides."""
 
+    last_load_location: str | None = None
+    """The location of the last loaded file."""
+
 
 ##############################################################################
 def configuration_file() -> Path:

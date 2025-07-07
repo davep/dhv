@@ -12,7 +12,7 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import NewCode
+from ..commands import LoadFile, NewCode
 
 
 ##############################################################################
@@ -28,6 +28,7 @@ class MainCommands(CommandsProvider):
         yield ChangeTheme()
         yield Help()
         yield Quit()
+        yield LoadFile()
         yield NewCode()
 
 

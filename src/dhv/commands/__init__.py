@@ -2,11 +2,11 @@
 
 ##############################################################################
 # Local imports.
-from .main import NewCode
+from .main import LoadFile, NewCode
 
 ##############################################################################
 # Exports.
-__all__ = ["NewCode"]
+__all__ = ["LoadFile", "NewCode"]
 
 
 ### __init__.py ends here

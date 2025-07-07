@@ -3,10 +3,11 @@
 ##############################################################################
 # Python imports.
 from argparse import Namespace
+from pathlib import Path
 
 ##############################################################################
 # Textual imports.
-from textual import on
+from textual import on, work
 from textual.app import ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Footer, Header
@@ -17,9 +18,14 @@ from textual_enhanced.commands import ChangeTheme, Command, Help, Quit
 from textual_enhanced.screen import EnhancedScreen
 
 ##############################################################################
+# Textual fspicker imports.
+from textual_fspicker import FileOpen, Filters
+
+##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import NewCode
+from ..commands import LoadFile, NewCode
+from ..data import load_configuration, update_configuration
 from ..providers import MainCommands
 from ..widgets import Disassembly, Source
 
@@ -50,6 +56,7 @@ class Main(EnhancedScreen[None]):
         Help,
         Quit,
         NewCode,
+        LoadFile,
         # Everything else.
         ChangeTheme,
     )
@@ -95,6 +102,36 @@ class Main(EnhancedScreen[None]):
     def action_new_code_command(self) -> None:
         """Handle the new code command."""
         self.query_one(Source).load_text("")
+
+    @work
+    async def action_load_file_command(self) -> None:
+        """Load the content of a file."""
+        if not (
+            start_location := Path(load_configuration().last_load_location or ".")
+        ).is_dir():
+            start_location = "."
+        if python_file := await self.app.push_screen_wait(
+            FileOpen(
+                location=str(start_location),
+                title="Load Python code",
+                open_button="Load",
+                must_exist=True,
+                filters=Filters(
+                    (
+                        "Python",
+                        lambda p: p.suffix.lower() in (".py", ".pyi", ".pyw", ".py3"),
+                    ),
+                    ("All", lambda _: True),
+                ),
+            )
+        ):
+            try:
+                self.query_one(Source).load_text(python_file.read_text())
+            except IOError as error:
+                self.notify(str(error), title="Unable to load that file")
+                return
+            with update_configuration() as config:
+                config.last_load_location = str(python_file.absolute().parent)
 
 
 ### main.py ends here

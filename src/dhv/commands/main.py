@@ -14,4 +14,13 @@ class NewCode(Command):
     FOOTER_TEXT = "New"
 
 
+##############################################################################
+class LoadFile(Command):
+    """Load the content of a Python source file."""
+
+    BINDING_KEY = "ctrl+l"
+    SHOW_IN_FOOTER = True
+    FOOTER_TEXT = "Load"
+
+
 ### main.py ends here
