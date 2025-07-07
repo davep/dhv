@@ -47,7 +47,8 @@ class Code(Option):
             code: The code that will follow.
         """
         super().__init__(
-            Rule(f"@{hex(id(code))}", style="dim bold"), id=f"{hex(id(code))}"
+            Group("", Rule(f"[dim bold]@{hex(id(code))}[/]", style="dim bold")),
+            id=f"{hex(id(code))}",
         )
 
 
@@ -94,7 +95,7 @@ class Operation(Option):
             else escape(operation.argrepr),
         )
         super().__init__(
-            Group(f"[bold italic]L{operation.label}:[/]", display)
+            Group(Rule(f"[dim]L{operation.label}[/]", style="dim"), display)
             if operation.is_jump_target
             else display,
             id=self.make_id(operation.offset, code),
