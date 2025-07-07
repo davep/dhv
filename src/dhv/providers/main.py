@@ -12,7 +12,7 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOpcodes
+from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOffsets, ToggleOpcodes
 
 
 ##############################################################################
@@ -31,6 +31,7 @@ class MainCommands(CommandsProvider):
         yield LoadFile()
         yield NewCode()
         yield SwitchLayout()
+        yield ToggleOffsets()
         yield ToggleOpcodes()
 
 

@@ -7,9 +7,16 @@ from textual_enhanced.commands import Command
 
 ##############################################################################
 class ToggleOpcodes(Command):
-    """Toggle the display of the numeric opcodes."""
+    """Toggle the display of the numeric opcodes"""
 
     BINDING_KEY = "f3"
+
+
+##############################################################################
+class ToggleOffsets(Command):
+    """Toggle the display of the offsets"""
+
+    BINDING_KEY = "f4"
 
 
 ### disassembly.py ends here

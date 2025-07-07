@@ -28,6 +28,8 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
+OFFSET_WIDTH: Final[int] = 4
+"""The width of the display of the offset."""
 OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
 """Get the maximum length of an operation name."""
 
@@ -55,6 +57,7 @@ class Operation(Option):
         self,
         operation: Instruction,
         *,
+        show_offset: bool = False,
         show_opcode: bool = False,
         code: CodeType | None = None,
     ) -> None:
@@ -62,6 +65,7 @@ class Operation(Option):
 
         Args:
             operation: The operation.
+            show_offset: Show the offset in the display?
             show_opcode: Show the opcode in the display?
             code: The code that the operation came from.
         """
@@ -79,6 +83,7 @@ class Operation(Option):
             if operation.starts_line and operation.line_number is not None
             else ""
         )
+        offset = f" [i dim]{operation.offset:{OFFSET_WIDTH}}[/] " if show_offset else ""
         opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
         arg = (
             f"[dim]code@[/]{hex(id(operation.argval))}"
@@ -86,7 +91,7 @@ class Operation(Option):
             else escape(operation.argrepr)
         )
         super().__init__(
-            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/] {operation.opname:{OPNAME_WIDTH}}{opcode} {arg}",
+            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/]{offset}{operation.opname:{OPNAME_WIDTH}}{opcode} {arg}",
             id=self.make_id(operation.offset, code),
         )
 
@@ -147,6 +152,9 @@ class Disassembly(EnhancedOptionList):
     code: var[str | None] = var(None)
     """The code to disassemble."""
 
+    show_offset: var[bool] = var(False)
+    """Show the offset of each instruction?"""
+
     show_opcodes: var[bool] = var(False)
     """Should we show the opcodes in the disassembly?"""
 
@@ -195,7 +203,10 @@ class Disassembly(EnhancedOptionList):
         for operation in operations:
             self.add_option(
                 Operation(
-                    operation, show_opcode=self.show_opcodes, code=operations.codeobj
+                    operation,
+                    show_offset=self.show_offset,
+                    show_opcode=self.show_opcodes,
+                    code=operations.codeobj,
                 )
             )
             if operation.line_number is not None and operation.starts_line:
@@ -210,20 +221,26 @@ class Disassembly(EnhancedOptionList):
         """React to the error state being toggled."""
         self.set_class(self.error, "--error")
 
-    def _watch_code(self) -> None:
-        """React to the code being changed."""
+    def _repopulate(self) -> None:
+        """Fully repopulate the display."""
         with self.preserved_highlight:
             self._add_operations(self.code or "", True)
+
+    def _watch_code(self) -> None:
+        """React to the code being changed."""
+        self._repopulate()
+
+    def _watch_show_offset(self) -> None:
+        """React to the show offset flag being toggled."""
+        self._repopulate()
 
     def _watch_show_opcodes(self) -> None:
         """React to the show opcodes flag being toggled."""
-        with self.preserved_highlight:
-            self._add_operations(self.code or "", True)
+        self._repopulate()
 
     def _watch_adaptive(self) -> None:
         """React to the adaptive flag being toggled."""
-        with self.preserved_highlight:
-            self._add_operations(self.code or "", True)
+        self._repopulate()
 
     @dataclass
     class InstructionHighlighted(Message):

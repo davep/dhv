@@ -31,6 +31,9 @@ class Configuration:
     horizontal_layout: bool = True
     """Should the main screen use horizontal layout?"""
 
+    show_offsets: bool = False
+    """Show the offsets in the disassembly?"""
+
     show_opcodes: bool = False
     """Show the numeric opcodes in the disassembly?"""
 

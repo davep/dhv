@@ -24,7 +24,7 @@ from textual_fspicker import FileOpen, Filters
 ##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOpcodes
+from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOffsets, ToggleOpcodes
 from ..data import load_configuration, update_configuration
 from ..providers import MainCommands
 from ..widgets import Disassembly, Source
@@ -70,6 +70,7 @@ class Main(EnhancedScreen[None]):
         # Everything else.
         ChangeTheme,
         SwitchLayout,
+        ToggleOffsets,
         ToggleOpcodes,
     )
 
@@ -100,6 +101,7 @@ class Main(EnhancedScreen[None]):
 
     def on_mount(self) -> None:
         """Configure the display once the DOM is mounted."""
+        self.query_one(Disassembly).show_offset = load_configuration().show_offsets
         self.query_one(Disassembly).show_opcodes = load_configuration().show_opcodes
 
     def _watch_horizontal_layout(self) -> None:
@@ -164,6 +166,13 @@ class Main(EnhancedScreen[None]):
         self.horizontal_layout = not self.horizontal_layout
         with update_configuration() as config:
             config.horizontal_layout = self.horizontal_layout
+
+    def action_toggle_offsets_command(self) -> None:
+        """Toggle the display of the offsets."""
+        show = not self.query_one(Disassembly).show_offset
+        self.query_one(Disassembly).show_offset = show
+        with update_configuration() as config:
+            config.show_offsets = show
 
     def action_toggle_opcodes_command(self) -> None:
         """Toggle the display of the numeric opcodes."""
