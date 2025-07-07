@@ -12,7 +12,7 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import LoadFile, NewCode
+from ..commands import LoadFile, NewCode, SwitchLayout
 
 
 ##############################################################################
@@ -30,6 +30,7 @@ class MainCommands(CommandsProvider):
         yield Quit()
         yield LoadFile()
         yield NewCode()
+        yield SwitchLayout()
 
 
 ### main.py ends here

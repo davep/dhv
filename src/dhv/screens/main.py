@@ -9,7 +9,7 @@ from pathlib import Path
 # Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
-from textual.containers import Horizontal
+from textual.reactive import var
 from textual.widgets import Footer, Header
 
 ##############################################################################
@@ -24,7 +24,7 @@ from textual_fspicker import FileOpen, Filters
 ##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import LoadFile, NewCode
+from ..commands import LoadFile, NewCode, SwitchLayout
 from ..data import load_configuration, update_configuration
 from ..providers import MainCommands
 from ..widgets import Disassembly, Source
@@ -37,6 +37,10 @@ class Main(EnhancedScreen[None]):
     TITLE = f"DHV v{__version__}"
 
     DEFAULT_CSS = """
+    Main.--horizontal {
+        layout: horizontal;
+    }
+
     Source, Disassembly {
         width: 1fr;
         height: 1fr;
@@ -65,11 +69,15 @@ class Main(EnhancedScreen[None]):
         LoadFile,
         # Everything else.
         ChangeTheme,
+        SwitchLayout,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
 
     COMMANDS = {MainCommands}
+
+    horizontal_layout: var[bool] = var(True)
+    """Should the panes lay out horizontally?"""
 
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
@@ -80,14 +88,18 @@ class Main(EnhancedScreen[None]):
         self._arguments = arguments
         """The arguments passed on the command line."""
         super().__init__()
+        self.horizontal_layout = load_configuration().horizontal_layout
 
     def compose(self) -> ComposeResult:
         """Compose the content of the screen."""
         yield Header()
-        with Horizontal():
-            yield Source()
-            yield Disassembly()
+        yield Source()
+        yield Disassembly()
         yield Footer()
+
+    def _watch_horizontal_layout(self) -> None:
+        """React to the horizontal layout setting being changed."""
+        self.set_class(self.horizontal_layout, "--horizontal")
 
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
@@ -141,6 +153,12 @@ class Main(EnhancedScreen[None]):
                 return
             with update_configuration() as config:
                 config.last_load_location = str(python_file.absolute().parent)
+
+    def action_switch_layout_command(self) -> None:
+        """Switch the layout of the window."""
+        self.horizontal_layout = not self.horizontal_layout
+        with update_configuration() as config:
+            config.horizontal_layout = self.horizontal_layout
 
 
 ### main.py ends here

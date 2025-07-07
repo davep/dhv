@@ -23,4 +23,11 @@ class LoadFile(Command):
     FOOTER_TEXT = "Load"
 
 
+##############################################################################
+class SwitchLayout(Command):
+    """Switch the screen layout between horizontal and vertical."""
+
+    BINDING_KEY = "f2"
+
+
 ### main.py ends here

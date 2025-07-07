@@ -28,6 +28,9 @@ class Configuration:
     last_load_location: str | None = None
     """The location of the last loaded file."""
 
+    horizontal_layout: bool = True
+    """Should the main screen use horizontal layout?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:
