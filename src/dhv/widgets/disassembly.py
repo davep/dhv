@@ -121,7 +121,7 @@ class Disassembly(EnhancedOptionList):
     DEFAULT_CSS = """
     Disassembly.--error {
         color: $text-error;
-        background: $error;
+        background: $error 25%;
     }
     """
 
