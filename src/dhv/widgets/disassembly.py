@@ -16,6 +16,7 @@ from rich.rule import Rule
 ##############################################################################
 # Textual imports.
 from textual import on
+from textual.content import Content
 from textual.message import Message
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
@@ -73,25 +74,49 @@ class Operation(Option):
         """The operation being displayed."""
         self._code = code
         """The code the operation came from."""
-        label = (
-            f"[bold italic i $accent]L{operation.label}:[/]\n"
+
+        # TODO: textual.content is a far worse develop experience in almost
+        # every regard when compared to Rich renderables. Laying things out
+        # neatly with Rich is so damn simple, swapping to Content just for
+        # the same of some extra colour variables just isn't worth the
+        # grief. Rework this so it's easier to maintain.
+
+        label = Content.from_markup(
+            f"[bold italic $accent]L{operation.label}:[/]\n"
             if operation.is_jump_target
             else ""
         )
+
         line_number = (
-            str(operation.line_number)
-            if operation.starts_line and operation.line_number is not None
-            else ""
+            Content.from_markup(
+                str(operation.line_number)
+                if operation.starts_line and operation.line_number is not None
+                else ""
+            ).right(LINE_NUMBER_WIDTH)
+            + " "
         )
-        offset = f" [i dim]{operation.offset:{OFFSET_WIDTH}}[/] " if show_offset else ""
-        opcode = f" [i dim]({operation.opcode})[/]" if show_opcode else ""
-        arg = (
+
+        offset = Content.from_markup(
+            f" [italic dim]{operation.offset:{OFFSET_WIDTH}}[/] " if show_offset else ""
+        )
+
+        opcode = (
+            Content(
+                f"{operation.opname + ' (' + str(operation.opcode) + ')':{OPNAME_WIDTH}}"
+                if show_opcode
+                else f"{operation.opname:{OPNAME_WIDTH}}"
+            )
+            + " "
+        )
+
+        arg = Content.from_markup(
             f"[dim]code@[/]{hex(id(operation.argval))}"
             if isinstance(operation.argval, CodeType)
             else escape(operation.argrepr)
         )
+
         super().__init__(
-            f"{label}[dim]{line_number:{LINE_NUMBER_WIDTH}}[/]{offset}{operation.opname:{OPNAME_WIDTH}}{opcode} {arg}",
+            Content.assemble(label, line_number, offset, opcode, arg),
             id=self.make_id(operation.offset, code),
         )
 
