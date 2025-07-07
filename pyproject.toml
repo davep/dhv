@@ -1,7 +1,7 @@
 [project]
 name = "dhv"
 version = "0.1.0"
-description = "Coming eventually"
+description = "A tool to dive into Python code"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
@@ -13,6 +13,46 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.11"
+license = { text = "GNU General Public License v3 or later (GPLv3+)" }
+keywords = [
+    "terminal",
+    "tui",
+    "chui",
+    "documentation",
+    "python",
+    "bytecode",
+    "disassembly",
+    "disassembler",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Topic :: Education",
+    "Topic :: Software Development :: Disassemblers",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development",
+    "Topic :: Terminals",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/davep/dhv"
+Repository = "https://github.com/davep/dhv"
+Documentation = "https://dhv.davep.dev/"
+Source = "https://github.com/davep/dhv"
+Issues = "https://github.com/davep/dhv/issues"
+Discussions = "https://github.com/davep/dhv/discussions"
 
 [project.scripts]
 dhv = "dhv.__main__:main"
@@ -37,3 +77,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/dhv"]
+
+[tool.pyright]
+venvPath="."
+venv=".venv"
+exclude=[".venv"]
