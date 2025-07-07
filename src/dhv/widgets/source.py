@@ -7,6 +7,7 @@ from dis import Instruction
 ##############################################################################
 # Textual imports.
 from textual.widgets import TextArea
+from textual.widgets.text_area import Selection
 
 
 ##############################################################################
@@ -28,7 +29,19 @@ class Source(TextArea):
         Args:
             instruction: The instruction to highlight.
         """
-        if instruction.line_number:
+        if (
+            (position := instruction.positions) is not None
+            and position.lineno is not None
+            and position.col_offset is not None
+            and position.end_lineno is not None
+            and position.end_col_offset is not None
+        ):
+            self.selection = Selection(
+                start=(position.lineno - 1, position.col_offset),
+                end=(position.end_lineno - 1, position.end_col_offset),
+            )
+            return
+        elif instruction.line_number:
             self.select_line(instruction.line_number - 1)
 
 
