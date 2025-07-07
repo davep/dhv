@@ -50,6 +50,12 @@ class Main(EnhancedScreen[None]):
     }
     """
 
+    HELP = """
+    ## Main application keys and commands
+
+    The following key bindings and commands are available:
+    """
+
     COMMAND_MESSAGES = (
         # Keep these together as they're bound to function keys and destined
         # for the footer.
