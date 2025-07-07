@@ -30,7 +30,7 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
-OFFSET_WIDTH: Final[int] = 4
+OFFSET_WIDTH: Final[int] = 5
 """The width of the display of the offset."""
 OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
 """Get the maximum length of an operation name."""
