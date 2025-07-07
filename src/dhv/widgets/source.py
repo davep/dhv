@@ -40,7 +40,6 @@ class Source(TextArea):
                 start=(position.lineno - 1, position.col_offset),
                 end=(position.end_lineno - 1, position.end_col_offset),
             )
-            return
         elif instruction.line_number:
             self.select_line(instruction.line_number - 1)
 
