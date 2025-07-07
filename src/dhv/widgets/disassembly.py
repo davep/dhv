@@ -10,13 +10,14 @@ from webbrowser import open_new
 
 ##############################################################################
 # Rich imports.
+from rich.console import Group
 from rich.markup import escape
 from rich.rule import Rule
+from rich.table import Table
 
 ##############################################################################
 # Textual imports.
 from textual import on
-from textual.content import Content
 from textual.message import Message
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
@@ -75,48 +76,27 @@ class Operation(Option):
         self._code = code
         """The code the operation came from."""
 
-        # TODO: textual.content is a far worse develop experience in almost
-        # every regard when compared to Rich renderables. Laying things out
-        # neatly with Rich is so damn simple, swapping to Content just for
-        # the same of some extra colour variables just isn't worth the
-        # grief. Rework this so it's easier to maintain.
-
-        label = Content.from_markup(
-            f"[bold italic $accent]L{operation.label}:[/]\n"
-            if operation.is_jump_target
-            else ""
-        )
-
-        line_number = (
-            Content.from_markup(
-                str(operation.line_number)
-                if operation.starts_line and operation.line_number is not None
-                else ""
-            ).right(LINE_NUMBER_WIDTH)
-            + " "
-        )
-
-        offset = Content.from_markup(
-            f" [italic dim]{operation.offset:{OFFSET_WIDTH}}[/] " if show_offset else ""
-        )
-
-        opcode = (
-            Content(
-                f"{operation.opname + ' (' + str(operation.opcode) + ')':{OPNAME_WIDTH}}"
-                if show_opcode
-                else f"{operation.opname:{OPNAME_WIDTH}}"
-            )
-            + " "
-        )
-
-        arg = Content.from_markup(
+        display = Table.grid(expand=True)
+        display.add_column(width=LINE_NUMBER_WIDTH)
+        display.add_column(width=OFFSET_WIDTH if show_offset else 0)
+        display.add_column(width=OPNAME_WIDTH)
+        display.add_column(ratio=1)
+        display.add_row(
+            str(operation.line_number)
+            if operation.line_number is not None and operation.starts_line
+            else "",
+            f"[dim]{operation.offset}[/]",
+            f"{operation.opname} [dim]({operation.opcode})[/]"
+            if show_opcode
+            else operation.opname,
             f"[dim]code@[/]{hex(id(operation.argval))}"
             if isinstance(operation.argval, CodeType)
-            else escape(operation.argrepr)
+            else escape(operation.argrepr),
         )
-
         super().__init__(
-            Content.assemble(label, line_number, offset, opcode, arg),
+            Group(f"[bold italic]L{operation.label}:[/]", display)
+            if operation.is_jump_target
+            else display,
             id=self.make_id(operation.offset, code),
         )
 
