@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from dis import Bytecode, Instruction, opname
 from types import CodeType
 from typing import Final, Self
+from webbrowser import open_new
 
 ##############################################################################
 # Rich imports.
@@ -21,6 +22,7 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 
 ##############################################################################
 # Textual enhanced imports.
+from textual_enhanced.binding import HelpfulBinding
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
@@ -124,6 +126,15 @@ class Disassembly(EnhancedOptionList):
         background: $error 25%;
     }
     """
+
+    BINDINGS = [
+        HelpfulBinding(
+            "o",
+            "opcode_documentation",
+            "Opcode Documentation",
+            tooltip="Show the opcode's documentation in the Python documentation",
+        )
+    ]
 
     code: var[str | None] = var(None)
     """The code to disassemble."""
@@ -256,6 +267,15 @@ class Disassembly(EnhancedOptionList):
         """Go to the first instruction for a given line number."""
         if line in self._line_map:
             self.highlighted = self._line_map[line]
+
+    def action_opcode_documentation(self) -> None:
+        """Handle a request to view the opcode's documentation."""
+        if self.highlighted is not None and isinstance(
+            option := self.get_option_at_index(self.highlighted), Operation
+        ):
+            open_new(
+                f"https://docs.python.org/3/library/dis.html#opcode-{option.operation.opname}"
+            )
 
 
 ### disassembly.py ends here
