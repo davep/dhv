@@ -79,7 +79,7 @@ pyyaml==6.0.2
 rich==14.0.0
     # via textual
     # via textual-serve
-textual==3.5.0
+textual==3.6.0
     # via dhv
     # via textual-dev
     # via textual-enhanced
@@ -92,6 +92,38 @@ textual-fspicker==0.4.1
     # via dhv
 textual-serve==1.1.2
     # via textual-dev
+tree-sitter==0.24.0
+    # via textual
+tree-sitter-bash==0.25.0
+    # via textual
+tree-sitter-css==0.23.2
+    # via textual
+tree-sitter-go==0.23.4
+    # via textual
+tree-sitter-html==0.23.2
+    # via textual
+tree-sitter-java==0.23.5
+    # via textual
+tree-sitter-javascript==0.23.1
+    # via textual
+tree-sitter-json==0.24.8
+    # via textual
+tree-sitter-markdown==0.3.2
+    # via textual
+tree-sitter-python==0.23.6
+    # via textual
+tree-sitter-regex==0.24.3
+    # via textual
+tree-sitter-rust==0.23.2
+    # via textual
+tree-sitter-sql==0.3.7
+    # via textual
+tree-sitter-toml==0.7.0
+    # via textual
+tree-sitter-xml==0.7.0
+    # via textual
+tree-sitter-yaml==0.7.1
+    # via textual
 typing-extensions==4.14.0
     # via mypy
     # via textual
