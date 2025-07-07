@@ -89,6 +89,14 @@ class Main(EnhancedScreen[None]):
         if self.focused == self.query_one(Disassembly):
             self.query_one(Source).highlight(message.instruction)
 
+    @on(Source.SelectionChanged)
+    def _highlight_disassembly(self, message: Source.SelectionChanged) -> None:
+        """Handle the selection changing in the code."""
+        if self.focused == self.query_one(Source):
+            self.query_one(Disassembly).goto_first_instruction_on_line(
+                message.selection.end[0] + 1
+            )
+
     @on(Source.Changed)
     def _code_changed(self) -> None:
         """Handle the fact that the code has changed."""

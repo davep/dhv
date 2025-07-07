@@ -137,6 +137,21 @@ class Disassembly(EnhancedOptionList):
     error: var[bool] = var(False)
     """Is there an error with the code we've been given?"""
 
+    def __init__(
+        self, id: str | None = None, classes: str | None = None, disabled: bool = False
+    ):
+        """Initialise the object.
+
+        Args:
+            name: The name of the disassembly.
+            id: The ID of the disassembly in the DOM.
+            classes: The CSS classes of the disassembly.
+            disabled: Whether the disassembly is disabled or not.
+        """
+        super().__init__(id=id, classes=classes, disabled=disabled)
+        self._line_map: dict[int, int] = {}
+        """A map of line numbers to locations within the disassembly display."""
+
     def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
         """Add the operations from the given code.
 
@@ -155,6 +170,7 @@ class Disassembly(EnhancedOptionList):
         self.error = False
         if fresh:
             self.clear_options()
+            self._line_map = {}
         if isinstance(code, CodeType):
             self.add_option(Code(code))
         for operation in operations:
@@ -163,6 +179,9 @@ class Disassembly(EnhancedOptionList):
                     operation, show_opcode=self.show_opcodes, code=operations.codeobj
                 )
             )
+            if operation.line_number is not None and operation.starts_line:
+                self._line_map[operation.line_number] = self.option_count - 1
+
         for operation in operations:
             if isinstance(operation.argval, CodeType):
                 self._add_operations(operation.argval)
@@ -232,6 +251,11 @@ class Disassembly(EnhancedOptionList):
                             title="Error",
                             severity="error",
                         )
+
+    def goto_first_instruction_on_line(self, line: int) -> None:
+        """Go to the first instruction for a given line number."""
+        if line in self._line_map:
+            self.highlighted = self._line_map[line]
 
 
 ### disassembly.py ends here
