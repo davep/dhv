@@ -83,11 +83,6 @@ class Main(EnhancedScreen[None]):
             yield Disassembly()
         yield Footer()
 
-    def on_mount(self) -> None:
-        from pathlib import Path
-
-        self.query_one(Source).load_text(Path(__file__).read_text())
-
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
         """Handle a request to highlight some code."""
