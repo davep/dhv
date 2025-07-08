@@ -42,6 +42,9 @@ class Source(TextArea):
             )
         elif instruction.line_number:
             self.select_line(instruction.line_number - 1)
+        else:
+            self.selection = Selection.cursor(self.selection.end)
+        self.scroll_cursor_visible(True)
 
 
 ### source.py ends here
