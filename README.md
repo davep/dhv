@@ -1,6 +1,6 @@
 # DHV
 
-![DHV](.images/dhv.gif)
+![DHV](https://raw.githubusercontent.com/davep/dhv/refs/heads/main/.images/dhv.gif)
 
 ## Introduction
 
