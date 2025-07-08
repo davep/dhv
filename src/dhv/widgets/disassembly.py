@@ -158,10 +158,10 @@ class Disassembly(EnhancedOptionList):
     code: var[str | None] = var(None)
     """The code to disassemble."""
 
-    show_offset: var[bool] = var(False)
+    show_offset: var[bool] = var(False, init=False)
     """Show the offset of each instruction?"""
 
-    show_opcodes: var[bool] = var(False)
+    show_opcodes: var[bool] = var(False, init=False)
     """Should we show the opcodes in the disassembly?"""
 
     error: var[bool] = var(False)
