@@ -1,12 +1,12 @@
 # DHV ChangeLog
 
-## v0.1.0
+## v0.1.1
 
 **Released: 2025-07-08**
 
 - Initial release.
 
-## v0.0.1
+## v0.1.0
 
 **Released: 2025-07-01**
 
