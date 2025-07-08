@@ -23,13 +23,12 @@ The package can be installed using [`pipx`](https://pypa.github.io/pipx/):
 $ pipx install dhv
 ```
 
-### Homebrew
+### uv
 
-The package is available via Homebrew. Use the following commands to install:
+The package can be install using [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```sh
-$ brew tap davep/homebrew
-$ brew install dhv
+uv tool install --python 3.13 dhv
 ```
 
 ## Using DHV
