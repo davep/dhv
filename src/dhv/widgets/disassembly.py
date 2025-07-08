@@ -142,7 +142,7 @@ class Disassembly(EnhancedOptionList):
         HelpfulBinding(
             "o",
             "opcode_documentation",
-            "Opcode Documentation",
+            "About opcode",
             tooltip="Show the opcode's documentation in the Python documentation",
         )
     ]
