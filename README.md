@@ -1,6 +1,6 @@
 # DHV
 
-![DHV](.images/dhv.png)
+![DHV](.images/dhv.gif)
 
 ## Introduction
 
