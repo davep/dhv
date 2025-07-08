@@ -164,9 +164,6 @@ class Disassembly(EnhancedOptionList):
     show_opcodes: var[bool] = var(False)
     """Should we show the opcodes in the disassembly?"""
 
-    adaptive: var[bool] = var(False)
-    """Show adaptive output?"""
-
     error: var[bool] = var(False)
     """Is there an error with the code we've been given?"""
 
@@ -196,7 +193,7 @@ class Disassembly(EnhancedOptionList):
             Self.
         """
         try:
-            operations = Bytecode(code, adaptive=self.adaptive)
+            operations = Bytecode(code)
         except SyntaxError:
             self.error = True
             return self
@@ -242,10 +239,6 @@ class Disassembly(EnhancedOptionList):
 
     def _watch_show_opcodes(self) -> None:
         """React to the show opcodes flag being toggled."""
-        self._repopulate()
-
-    def _watch_adaptive(self) -> None:
-        """React to the adaptive flag being toggled."""
         self._repopulate()
 
     @dataclass
