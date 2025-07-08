@@ -30,7 +30,7 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
-OFFSET_WIDTH: Final[int] = 5
+OFFSET_WIDTH: Final[int] = 4
 """The width of the display of the offset."""
 OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
 """Get the maximum length of an operation name."""
@@ -77,7 +77,7 @@ class Operation(Option):
         self._code = code
         """The code the operation came from."""
 
-        display = Table.grid(expand=True)
+        display = Table.grid(expand=True, padding=1)
         display.add_column(width=LINE_NUMBER_WIDTH)
         display.add_column(width=OFFSET_WIDTH if show_offset else 0)
         display.add_column(width=OPNAME_WIDTH)
@@ -95,7 +95,15 @@ class Operation(Option):
             else escape(operation.argrepr),
         )
         super().__init__(
-            Group(Rule(f"[dim]L{operation.label}[/]", style="dim"), display)
+            Group(
+                Rule(
+                    f"[italic dim]-- L{operation.label}[/]",
+                    align="left",
+                    style="dim",
+                    characters="-",
+                ),
+                display,
+            )
             if operation.is_jump_target
             else display,
             id=self.make_id(operation.offset, code),
