@@ -137,7 +137,7 @@ class Main(EnhancedScreen[None]):
         if not (
             start_location := Path(load_configuration().last_load_location or ".")
         ).is_dir():
-            start_location = "."
+            start_location = Path(".")
         if python_file := await self.app.push_screen_wait(
             FileOpen(
                 location=str(start_location),
