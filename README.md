@@ -7,6 +7,12 @@
 DHV is a terminal-based tool for diving into Python code, the emphasis for
 now being on [bytecode disassembly](https://docs.python.org/3/library/dis.html).
 
+> [!IMPORTANT]
+>
+> Python's `dis` module is a bit of a moving target; because of this and to
+> try and keep the code as clean as possible DHV only works with Python 3.13
+> or later.
+
 ## Installing
 
 ### pipx
