@@ -192,17 +192,29 @@ class Disassembly(EnhancedOptionList):
         Returns:
             Self.
         """
+
+        # Build the code up first.
         try:
             operations = Bytecode(code)
         except SyntaxError:
+            # There was an error so nope out, but keep the display as is so
+            # the user can see what was and also doesn't keep getting code
+            # disappear and then appear again.
             self.error = True
             return self
         self.error = False
+
+        # If this is a fresh add we start out by clearing everything down.
         if fresh:
             self.clear_options()
             self._line_map = {}
+
+        # If we've been given a code object, rather than some source, add a
+        # marker for that.
         if isinstance(code, CodeType):
             self.add_option(Code(code))
+
+        # Add each operation...
         for operation in operations:
             self.add_option(
                 Operation(
@@ -215,9 +227,12 @@ class Disassembly(EnhancedOptionList):
             if operation.line_number is not None and operation.starts_line:
                 self._line_map[operation.line_number] = self.option_count - 1
 
+        # Now look for any operations that have code as their arguments, and
+        # add that code too.
         for operation in operations:
             if isinstance(operation.argval, CodeType):
                 self._add_operations(operation.argval)
+
         return self
 
     def _watch_error(self) -> None:
