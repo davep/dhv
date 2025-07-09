@@ -2,7 +2,7 @@
 
 ##############################################################################
 # Python imports.
-from argparse import ArgumentParser, BooleanOptionalAction, Namespace
+from argparse import ArgumentParser, Namespace
 from inspect import cleandoc
 from operator import attrgetter
 from pathlib import Path
@@ -23,7 +23,7 @@ def get_args() -> Namespace:
 
     # Build the parser.
     parser = ArgumentParser(
-        prog="hike",
+        prog="dhv",
         description=__doc__,
         epilog=f"v{__version__}",
     )
@@ -53,13 +53,6 @@ def get_args() -> Namespace:
         action="store_true",
     )
 
-    # Add --navigation
-    parser.add_argument(
-        "--navigation",
-        help="Show or hide the navigation panel on startup",
-        action=BooleanOptionalAction,
-    )
-
     # Add --theme
     parser.add_argument(
         "-t",
@@ -73,13 +66,6 @@ def get_args() -> Namespace:
         nargs="?",
         type=Path,
         help="A Python source file to disassemble",
-    )
-
-    # The remainder is going to be the initial command.
-    parser.add_argument(
-        "command",
-        help="The initial command; can be any valid input to Hike's command line.",
-        nargs="*",
     )
 
     # Finally, parse the command line.
