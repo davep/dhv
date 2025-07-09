@@ -1,5 +1,12 @@
 # DHV ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added the ability to pass a filename on the command line.
+  ([#5](https://github.com/davep/dhv/pull/5))
+
 ## v0.1.1
 
 **Released: 2025-07-08**

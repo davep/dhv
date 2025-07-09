@@ -5,6 +5,7 @@
 from argparse import ArgumentParser, BooleanOptionalAction, Namespace
 from inspect import cleandoc
 from operator import attrgetter
+from pathlib import Path
 
 ##############################################################################
 # Local imports.
@@ -64,6 +65,14 @@ def get_args() -> Namespace:
         "-t",
         "--theme",
         help="Set the theme for the application (set to ? to list available themes)",
+    )
+
+    # An optional file to open.
+    parser.add_argument(
+        "source",
+        nargs="?",
+        type=Path,
+        help="A Python source file to disassemble",
     )
 
     # The remainder is going to be the initial command.
