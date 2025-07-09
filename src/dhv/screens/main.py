@@ -99,10 +99,26 @@ class Main(EnhancedScreen[None]):
         yield Disassembly()
         yield Footer()
 
+    def _show_source(self, source: Path) -> None:
+        """Load up the content of a Python source file.
+
+        Args:
+            source: The path to the source file to load.
+        """
+        try:
+            self.query_one(Source).load_text(source.read_text())
+        except IOError as error:
+            self.notify(str(error), title=f"Unable to load {source}", severity="error")
+            return
+        with update_configuration() as config:
+            config.last_load_location = str(source.absolute().parent)
+
     def on_mount(self) -> None:
         """Configure the display once the DOM is mounted."""
         self.query_one(Disassembly).show_offset = load_configuration().show_offsets
         self.query_one(Disassembly).show_opcodes = load_configuration().show_opcodes
+        if isinstance(to_open := self._arguments.source, Path):
+            self._show_source(to_open)
 
     def _watch_horizontal_layout(self) -> None:
         """React to the horizontal layout setting being changed."""
@@ -133,7 +149,7 @@ class Main(EnhancedScreen[None]):
 
     @work
     async def action_load_file_command(self) -> None:
-        """Load the content of a file."""
+        """Browse for and open a Python source file."""
         if not (
             start_location := Path(load_configuration().last_load_location or ".")
         ).is_dir():
@@ -153,13 +169,7 @@ class Main(EnhancedScreen[None]):
                 ),
             )
         ):
-            try:
-                self.query_one(Source).load_text(python_file.read_text())
-            except IOError as error:
-                self.notify(str(error), title="Unable to load that file")
-                return
-            with update_configuration() as config:
-                config.last_load_location = str(python_file.absolute().parent)
+            self._show_source(python_file)
 
     def action_switch_layout_command(self) -> None:
         """Switch the layout of the window."""
