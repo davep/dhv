@@ -31,20 +31,21 @@ class Source(TextArea):
         Args:
             location: The location message to get the data from.
         """
-        if location.line_number_only:
-            self.select_line(location.line_number - 1)
-        elif (
-            location.start_line is not None
-            and location.start_column is not None
-            and location.end_line is not None
-            and location.end_column is not None
-        ):
-            self.selection = Selection(
-                start=(location.start_line - 1, location.start_column),
-                end=(location.end_line - 1, location.end_column),
-            )
-        else:
-            self.selection = Selection.cursor(self.selection.end)
+        with self.prevent(TextArea.SelectionChanged):
+            if location.line_number_only:
+                self.select_line(location.line_number - 1)
+            elif (
+                location.start_line is not None
+                and location.start_column is not None
+                and location.end_line is not None
+                and location.end_column is not None
+            ):
+                self.selection = Selection(
+                    start=(location.start_line - 1, location.start_column),
+                    end=(location.end_line - 1, location.end_column),
+                )
+            else:
+                self.selection = Selection.cursor(self.selection.end)
         self.scroll_cursor_visible(True)
 
     @on(TextArea.SelectionChanged)
