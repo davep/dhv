@@ -2,6 +2,7 @@
 
 ##############################################################################
 # Textual imports.
+from textual import on
 from textual.widgets import TextArea
 from textual.widgets.text_area import Selection
 
@@ -45,6 +46,12 @@ class Source(TextArea):
         else:
             self.selection = Selection.cursor(self.selection.end)
         self.scroll_cursor_visible(True)
+
+    @on(TextArea.SelectionChanged)
+    def _cursor_location_changed(self, message: TextArea.SelectionChanged) -> None:
+        """Handle the cursor location changing."""
+        message.stop()
+        self.post_message(LocationChanged(self, message.selection.end[0] + 1))
 
 
 ### source.py ends here

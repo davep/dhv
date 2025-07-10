@@ -170,17 +170,13 @@ class Main(EnhancedScreen[None]):
         """React to the AST visibility state change."""
         self.query_one(AbstractSyntaxTree).set_class(not self.show_ast, "--hidden")
 
-    @on(Source.SelectionChanged)
-    def _line_changed(self, message: Source.SelectionChanged) -> None:
-        """React to movement within the source code."""
-        if self.focused == self.query_one(Source):
-            self.query_one(Disassembly).goto_first_instruction_on_line(
-                message.selection.end[0] + 1
-            )
-
     @on(LocationChanged)
     def _location_changed(self, message: LocationChanged) -> None:
-        """React to a change of highlighted instruction in the disassembly."""
+        """React to a change of highlighted instruction in the code.
+
+        Args:
+            message: The message to handle.
+        """
         if self.focused != self.query_one(Source):
             self.query_one(Source).highlight_location(message)
         if (
