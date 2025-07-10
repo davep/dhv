@@ -30,4 +30,25 @@ class SwitchLayout(Command):
     BINDING_KEY = "f2"
 
 
+##############################################################################
+class ShowDisassemblyOnly(Command):
+    """Only show the disassembly of the source code."""
+
+    BINDING_KEY = "ctrl+b"
+
+
+##############################################################################
+class ShowASTOnly(Command):
+    """Only show the AST of the source code."""
+
+    BINDING_KEY = "ctrl+t"
+
+
+##############################################################################
+class ShowDisassemblyAndAST(Command):
+    """Show both the disassembly and the AST of the source code."""
+
+    BINDING_KEY = "ctrl+o"
+
+
 ### main.py ends here

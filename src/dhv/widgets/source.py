@@ -22,6 +22,7 @@ class Source(TextArea):
             soft_wrap=False,
             show_line_numbers=True,
         )
+        self.border_title = "Source"
 
     def highlight(self, instruction: Instruction) -> None:
         """Highlight the given instruction.

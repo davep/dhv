@@ -12,7 +12,16 @@ from textual_enhanced.commands import (
 
 ##############################################################################
 # Local imports.
-from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOffsets, ToggleOpcodes
+from ..commands import (
+    LoadFile,
+    NewCode,
+    ShowASTOnly,
+    ShowDisassemblyAndAST,
+    ShowDisassemblyOnly,
+    SwitchLayout,
+    ToggleOffsets,
+    ToggleOpcodes,
+)
 
 
 ##############################################################################
@@ -33,6 +42,9 @@ class MainCommands(CommandsProvider):
         yield SwitchLayout()
         yield ToggleOffsets()
         yield ToggleOpcodes()
+        yield ShowASTOnly()
+        yield ShowDisassemblyAndAST()
+        yield ShowDisassemblyOnly()
 
 
 ### main.py ends here

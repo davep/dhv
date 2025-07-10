@@ -9,6 +9,7 @@ from pathlib import Path
 # Textual imports.
 from textual import on, work
 from textual.app import ComposeResult
+from textual.containers import Vertical
 from textual.reactive import var
 from textual.widgets import Footer, Header
 
@@ -24,10 +25,19 @@ from textual_fspicker import FileOpen, Filters
 ##############################################################################
 # Local imports.
 from .. import __version__
-from ..commands import LoadFile, NewCode, SwitchLayout, ToggleOffsets, ToggleOpcodes
+from ..commands import (
+    LoadFile,
+    NewCode,
+    ShowASTOnly,
+    ShowDisassemblyAndAST,
+    ShowDisassemblyOnly,
+    SwitchLayout,
+    ToggleOffsets,
+    ToggleOpcodes,
+)
 from ..data import load_configuration, update_configuration
 from ..providers import MainCommands
-from ..widgets import Disassembly, Source
+from ..widgets import AbstractSyntaxTree, Disassembly, Source
 
 
 ##############################################################################
@@ -37,17 +47,27 @@ class Main(EnhancedScreen[None]):
     TITLE = f"DHV v{__version__}"
 
     DEFAULT_CSS = """
-    Main.--horizontal {
-        layout: horizontal;
+    Main {
+        &.--horizontal {
+            layout: horizontal;
+        }
     }
 
-    Source, Disassembly {
+    Disassembly, AbstractSyntaxTree {
+        &.--hidden {
+            display: none;
+        }
+    }
+
+    Source, Disassembly, AbstractSyntaxTree {
         width: 1fr;
         height: 1fr;
         border: none;
+        border-top: solid $panel;
         border-left: solid $panel;
         &:focus {
             border: none;
+            border-top: solid $border;
             border-left: solid $border;
             background: $panel 80%;
         }
@@ -72,14 +92,26 @@ class Main(EnhancedScreen[None]):
         SwitchLayout,
         ToggleOffsets,
         ToggleOpcodes,
+        ShowASTOnly,
+        ShowDisassemblyAndAST,
+        ShowDisassemblyOnly,
     )
 
     BINDINGS = Command.bindings(*COMMAND_MESSAGES)
 
     COMMANDS = {MainCommands}
 
+    code: var[str | None] = var(None)
+    """The code we're viewing."""
+
     horizontal_layout: var[bool] = var(True)
     """Should the panes lay out horizontally?"""
+
+    show_disassembly: var[bool] = var(True)
+    """Should we show the disassembly panel?"""
+
+    show_ast: var[bool] = var(False)
+    """Should we show the AST panel?"""
 
     def __init__(self, arguments: Namespace) -> None:
         """Initialise the main screen.
@@ -90,13 +122,14 @@ class Main(EnhancedScreen[None]):
         self._arguments = arguments
         """The arguments passed on the command line."""
         super().__init__()
-        self.horizontal_layout = load_configuration().horizontal_layout
 
     def compose(self) -> ComposeResult:
         """Compose the content of the screen."""
         yield Header()
         yield Source()
-        yield Disassembly()
+        with Vertical():
+            yield Disassembly().data_bind(Main.code)
+            yield AbstractSyntaxTree().data_bind(Main.code)
         yield Footer()
 
     def _show_source(self, source: Path) -> None:
@@ -115,14 +148,26 @@ class Main(EnhancedScreen[None]):
 
     def on_mount(self) -> None:
         """Configure the display once the DOM is mounted."""
-        self.query_one(Disassembly).show_offset = load_configuration().show_offsets
-        self.query_one(Disassembly).show_opcodes = load_configuration().show_opcodes
+        config = load_configuration()
+        self.horizontal_layout = config.horizontal_layout
+        self.show_ast = config.show_ast
+        self.show_disassembly = config.show_disassembly
+        self.query_one(Disassembly).show_offset = config.show_offsets
+        self.query_one(Disassembly).show_opcodes = config.show_opcodes
         if isinstance(to_open := self._arguments.source, Path):
             self._show_source(to_open)
 
     def _watch_horizontal_layout(self) -> None:
         """React to the horizontal layout setting being changed."""
         self.set_class(self.horizontal_layout, "--horizontal")
+
+    def _watch_show_disassembly(self) -> None:
+        """React to the disassembly visibility state change."""
+        self.query_one(Disassembly).set_class(not self.show_disassembly, "--hidden")
+
+    def _watch_show_ast(self) -> None:
+        """React to the AST visibility state change."""
+        self.query_one(AbstractSyntaxTree).set_class(not self.show_ast, "--hidden")
 
     @on(Disassembly.InstructionHighlighted)
     def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
@@ -141,7 +186,7 @@ class Main(EnhancedScreen[None]):
     @on(Source.Changed)
     def _code_changed(self) -> None:
         """Handle the fact that the code has changed."""
-        self.query_one(Disassembly).code = self.query_one(Source).document.text
+        self.code = self.query_one(Source).document.text
 
     def action_new_code_command(self) -> None:
         """Handle the new code command."""
@@ -190,6 +235,30 @@ class Main(EnhancedScreen[None]):
         self.query_one(Disassembly).show_opcodes = show
         with update_configuration() as config:
             config.show_opcodes = show
+
+    def _save_panels(self) -> None:
+        """Remember which panels are visible."""
+        with update_configuration() as config:
+            config.show_ast = self.show_ast
+            config.show_disassembly = self.show_disassembly
+
+    def action_show_disassembly_only_command(self) -> None:
+        """Show only the disassembly."""
+        self.show_disassembly = True
+        self.show_ast = False
+        self._save_panels()
+
+    def action_show_ast_only_command(self) -> None:
+        """Show only the AST."""
+        self.show_disassembly = False
+        self.show_ast = True
+        self._save_panels()
+
+    def action_show_disassembly_and_ast_command(self) -> None:
+        """Show both the disassembly and the AST."""
+        self.show_disassembly = True
+        self.show_ast = True
+        self._save_panels()
 
 
 ### main.py ends here

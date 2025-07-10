@@ -3,11 +3,27 @@
 ##############################################################################
 # Local imports.
 from .disassembly import ToggleOffsets, ToggleOpcodes
-from .main import LoadFile, NewCode, SwitchLayout
+from .main import (
+    LoadFile,
+    NewCode,
+    ShowASTOnly,
+    ShowDisassemblyAndAST,
+    ShowDisassemblyOnly,
+    SwitchLayout,
+)
 
 ##############################################################################
 # Exports.
-__all__ = ["LoadFile", "NewCode", "SwitchLayout", "ToggleOffsets", "ToggleOpcodes"]
+__all__ = [
+    "LoadFile",
+    "NewCode",
+    "ShowASTOnly",
+    "ShowDisassemblyAndAST",
+    "ShowDisassemblyOnly",
+    "SwitchLayout",
+    "ToggleOffsets",
+    "ToggleOpcodes",
+]
 
 
 ### __init__.py ends here

@@ -37,6 +37,12 @@ class Configuration:
     show_opcodes: bool = False
     """Show the numeric opcodes in the disassembly?"""
 
+    show_disassembly: bool = True
+    """Should we show the disassembly panel?"""
+
+    show_ast: bool = False
+    """Should we show the AST panel?"""
+
 
 ##############################################################################
 def configuration_file() -> Path:

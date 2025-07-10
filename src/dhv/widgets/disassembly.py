@@ -189,6 +189,7 @@ class Disassembly(EnhancedOptionList):
         super().__init__(id=id, classes=classes, disabled=disabled)
         self._line_map: dict[int, int] = {}
         """A map of line numbers to locations within the disassembly display."""
+        self.border_title = "Disassembly"
 
     def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
         """Add the operations from the given code.
