@@ -3,6 +3,7 @@
 ##############################################################################
 # Python imports.
 from ast import AST, AsyncFunctionDef, ClassDef, FunctionDef, parse
+from dataclasses import dataclass
 from functools import singledispatchmethod
 from typing import Any, Self
 
@@ -12,9 +13,14 @@ from rich.markup import escape
 
 ##############################################################################
 # Textual imports.
+from textual import on
 from textual.reactive import var
 from textual.widgets import Tree
 from textual.widgets.tree import TreeNode
+
+##############################################################################
+# Local imports.
+from ..messages import LocationChanged
 
 ##############################################################################
 ASTNode = TreeNode[Any]
@@ -155,6 +161,48 @@ class AbstractSyntaxTree(Tree[Any]):
         self.error = False
         self.clear()._add(ast, self.root).root.expand_all()
         self.select_node(self.root)
+
+    @classmethod
+    def _location_of(
+        cls, node: ASTNode
+    ) -> tuple[int | None, int | None, int | None, int | None] | None:
+        """Get the location of a node in the AST.
+
+        Args:
+            node: The node in the tree to get the location of.
+
+        Returns:
+            A tuple of the location data, or `None` if nothing could be worked out.
+        """
+        if all(
+            hasattr(node.data, location_property)
+            for location_property in (
+                "lineno",
+                "col_offset",
+                "end_lineno",
+                "end_col_offset",
+            )
+        ):
+            return (
+                getattr(node.data, "lineno", None),
+                getattr(node.data, "col_offset", None),
+                getattr(node.data, "end_lineno", None),
+                getattr(node.data, "end_col_offset", None),
+            )
+        elif node.parent is not None:
+            return cls._location_of(node.parent)
+        return None
+
+    @on(Tree.NodeHighlighted)
+    def _ast_node_highlighted(self, message: Tree.NodeHighlighted) -> None:
+        """Handle a node being highlighted in the AST.
+
+        Args:
+            message: The message to handle.
+        """
+        if location := self._location_of(message.node):
+            message.stop()
+            self.post_message(LocationChanged(self, *location))
 
 
 ### ast.py ends here

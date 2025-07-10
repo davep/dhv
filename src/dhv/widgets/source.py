@@ -1,13 +1,14 @@
 """Widget for showing some Python source code."""
 
 ##############################################################################
-# Python imports.
-from dis import Instruction
-
-##############################################################################
 # Textual imports.
+from textual import on
 from textual.widgets import TextArea
 from textual.widgets.text_area import Selection
+
+##############################################################################
+# Local imports.
+from ..messages import LocationChanged
 
 
 ##############################################################################
@@ -24,25 +25,26 @@ class Source(TextArea):
         )
         self.border_title = "Source"
 
-    def highlight(self, instruction: Instruction) -> None:
-        """Highlight the given instruction.
+    @on(LocationChanged)
+    def _location_changed(self, location: LocationChanged) -> None:
+        """Highlight the given location.
 
         Args:
-            instruction: The instruction to highlight.
+            location: The location message to get the data from.
         """
-        if (
-            (position := instruction.positions) is not None
-            and position.lineno is not None
-            and position.col_offset is not None
-            and position.end_lineno is not None
-            and position.end_col_offset is not None
+        location.stop()
+        if location.line_number_only:
+            self.select_line(location.line_number - 1)
+        elif (
+            location.start_line is not None
+            and location.start_column is not None
+            and location.end_line is not None
+            and location.end_column is not None
         ):
             self.selection = Selection(
-                start=(position.lineno - 1, position.col_offset),
-                end=(position.end_lineno - 1, position.end_col_offset),
+                start=(location.start_line - 1, location.start_column),
+                end=(location.end_line - 1, location.end_column),
             )
-        elif instruction.line_number:
-            self.select_line(instruction.line_number - 1)
         else:
             self.selection = Selection.cursor(self.selection.end)
         self.scroll_cursor_visible(True)

@@ -36,6 +36,7 @@ from ..commands import (
     ToggleOpcodes,
 )
 from ..data import load_configuration, update_configuration
+from ..messages import LocationChanged
 from ..providers import MainCommands
 from ..widgets import AbstractSyntaxTree, Disassembly, Source
 
@@ -169,19 +170,20 @@ class Main(EnhancedScreen[None]):
         """React to the AST visibility state change."""
         self.query_one(AbstractSyntaxTree).set_class(not self.show_ast, "--hidden")
 
-    @on(Disassembly.InstructionHighlighted)
-    def _highlight_code(self, message: Disassembly.InstructionHighlighted) -> None:
-        """Handle a request to highlight some code."""
-        if self.focused == self.query_one(Disassembly):
-            self.query_one(Source).highlight(message.instruction)
-
     @on(Source.SelectionChanged)
-    def _highlight_disassembly(self, message: Source.SelectionChanged) -> None:
-        """Handle the selection changing in the code."""
+    def _line_changed(self, message: Source.SelectionChanged) -> None:
+        """React to movement within the source code."""
         if self.focused == self.query_one(Source):
             self.query_one(Disassembly).goto_first_instruction_on_line(
                 message.selection.end[0] + 1
             )
+
+    @on(LocationChanged)
+    def _location_changed(self, message: LocationChanged) -> None:
+        """React to a change of highlighted instruction in the disassembly."""
+        if self.focused != self.query_one(Source):
+            for widget in self.query("Source, AbstractSyntaxTree"):
+                widget.post_message(message)
 
     @on(Source.Changed)
     def _code_changed(self) -> None:

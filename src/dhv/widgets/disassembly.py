@@ -28,6 +28,10 @@ from textual_enhanced.binding import HelpfulBinding
 from textual_enhanced.widgets import EnhancedOptionList
 
 ##############################################################################
+# Local imports.
+from ..messages import LocationChanged
+
+##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
 OFFSET_WIDTH: Final[int] = 4
@@ -265,13 +269,6 @@ class Disassembly(EnhancedOptionList):
         """React to the show opcodes flag being toggled."""
         self._repopulate()
 
-    @dataclass
-    class InstructionHighlighted(Message):
-        """Message posted when an instruction is highlighted."""
-
-        instruction: Instruction
-        """The highlighted instruction."""
-
     @on(EnhancedOptionList.OptionHighlighted)
     def _instruction_highlighted(
         self, message: EnhancedOptionList.OptionHighlighted
@@ -283,7 +280,17 @@ class Disassembly(EnhancedOptionList):
         """
         message.stop()
         if isinstance(message.option, Operation):
-            self.post_message(self.InstructionHighlighted(message.option.operation))
+            self.post_message(
+                LocationChanged(self, start_line=message.option.operation.line_number)
+                if message.option.operation.positions is None
+                else LocationChanged(
+                    changer=self,
+                    start_line=message.option.operation.positions.lineno,
+                    start_column=message.option.operation.positions.col_offset,
+                    end_line=message.option.operation.positions.end_lineno,
+                    end_column=message.option.operation.positions.end_col_offset,
+                )
+            )
 
     @on(EnhancedOptionList.OptionSelected)
     def _maybe_jump_to_code(self, message: EnhancedOptionList.OptionSelected) -> None:
