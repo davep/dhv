@@ -90,7 +90,7 @@ class AbstractSyntaxTree(Tree[Any]):
         """
         label = f"{escape(item.__class__.__name__)}"
         if isinstance(item, (ClassDef, FunctionDef, AsyncFunctionDef)):
-            label = f"{label} [dim italic]{item.name}[/]"
+            label = f"{label} [dim italic]{escape(item.name)}[/]"
         return to_node.add(label, data=item)
 
     @_base_node.register
@@ -104,7 +104,7 @@ class AbstractSyntaxTree(Tree[Any]):
         Returns:
             The new node.
         """
-        return to_node.add(item, data=item)
+        return to_node.add(escape(item), data=item)
 
     @singledispatchmethod
     def _add(self, item: Any, to_node: ASTNode) -> Self:
