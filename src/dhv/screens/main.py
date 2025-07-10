@@ -183,6 +183,13 @@ class Main(EnhancedScreen[None]):
         """React to a change of highlighted instruction in the disassembly."""
         if self.focused != self.query_one(Source):
             self.query_one(Source).highlight_location(message)
+        if (
+            self.focused != self.query_one(Disassembly)
+            and message.start_line is not None
+        ):
+            self.query_one(Disassembly).goto_first_instruction_on_line(
+                message.start_line
+            )
 
     @on(Source.Changed)
     def _code_changed(self) -> None:
