@@ -3,7 +3,6 @@
 ##############################################################################
 # Python imports.
 from ast import AST, AsyncFunctionDef, ClassDef, FunctionDef, parse
-from dataclasses import dataclass
 from functools import singledispatchmethod
 from typing import Any, Self
 
