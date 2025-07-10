@@ -193,7 +193,7 @@ class AbstractSyntaxTree(Tree[Any]):
         return None
 
     @on(Tree.NodeHighlighted)
-    def _ast_node_highlighted(self, message: Tree.NodeHighlighted) -> None:
+    def _ast_node_highlighted(self, message: Tree.NodeHighlighted[ASTNode]) -> None:
         """Handle a node being highlighted in the AST.
 
         Args:
