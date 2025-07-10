@@ -182,8 +182,7 @@ class Main(EnhancedScreen[None]):
     def _location_changed(self, message: LocationChanged) -> None:
         """React to a change of highlighted instruction in the disassembly."""
         if self.focused != self.query_one(Source):
-            for widget in self.query("Source, AbstractSyntaxTree"):
-                widget.post_message(message)
+            self.query_one(Source).highlight_location(message)
 
     @on(Source.Changed)
     def _code_changed(self) -> None:

@@ -2,7 +2,6 @@
 
 ##############################################################################
 # Textual imports.
-from textual import on
 from textual.widgets import TextArea
 from textual.widgets.text_area import Selection
 
@@ -25,14 +24,12 @@ class Source(TextArea):
         )
         self.border_title = "Source"
 
-    @on(LocationChanged)
-    def _location_changed(self, location: LocationChanged) -> None:
+    def highlight_location(self, location: LocationChanged) -> None:
         """Highlight the given location.
 
         Args:
             location: The location message to get the data from.
         """
-        location.stop()
         if location.line_number_only:
             self.select_line(location.line_number - 1)
         elif (
