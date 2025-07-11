@@ -30,6 +30,9 @@ ASTNode = TreeNode[Any]
 class AbstractSyntaxTree(Tree[Any]):
     """Widget that displays Python code AST."""
 
+    ICON_NODE = "…"
+    ICON_NODE_EXPANDED = " "
+
     DEFAULT_CSS = """
     AbstractSyntaxTree.--error {
         color: $text-error;
@@ -56,6 +59,8 @@ class AbstractSyntaxTree(Tree[Any]):
         super().__init__("", id=id, classes=classes, disabled=disabled)
         self.show_root = False
         self.border_title = "AST"
+        self.show_guides = False
+        self.guide_depth = 1
 
     @classmethod
     def maybe_add(cls, value: Any) -> bool:
