@@ -198,6 +198,17 @@ class Main(EnhancedScreen[None]):
                 message.location.start_line
             )
 
+        # If we're not in the AST, or we're not getting an update from the
+        # AST, update the AST.
+        if (
+            not isinstance(message.changer, AbstractSyntaxTree)
+            and not isinstance(self.focused, AbstractSyntaxTree)
+            and message.location.start_line is not None
+        ):
+            self.query_one(AbstractSyntaxTree).goto_first_node_on_line(
+                message.location.start_line
+            )
+
     @on(Source.Changed)
     def _code_changed(self) -> None:
         """Handle the fact that the code has changed."""
