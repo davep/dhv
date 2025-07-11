@@ -194,7 +194,7 @@ class AbstractSyntaxTree(Tree[Any]):
             return
         self.error = False
         self.clear()._add(ast, self.root).root.expand_all()
-        self.select_node(self.root)
+        self.move_cursor(self.root)
 
     @on(Tree.NodeHighlighted)
     def _ast_node_highlighted(self, message: Tree.NodeHighlighted[ASTNode]) -> None:
