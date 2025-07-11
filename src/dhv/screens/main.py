@@ -180,10 +180,18 @@ class Main(EnhancedScreen[None]):
         Args:
             message: The message to handle.
         """
-        if self.focused != self.query_one(Source):
+        # If we're not in the source, or we're not getting an update from
+        # the source, update the source.
+        if not isinstance(message.changer, Source) and not isinstance(
+            self.focused, Source
+        ):
             self.query_one(Source).highlight_location(message.location)
+
+        # If we're not in the disassembly, or we're not getting an update
+        # from the disassembly, update the disassembly.
         if (
-            self.focused != self.query_one(Disassembly)
+            not isinstance(message.changer, Disassembly)
+            and not isinstance(self.focused, Disassembly)
             and message.location.start_line is not None
         ):
             self.query_one(Disassembly).goto_first_instruction_on_line(
