@@ -66,11 +66,13 @@ class Main(EnhancedScreen[None]):
         border: none;
         border-top: solid $panel;
         border-left: solid $panel;
+        border-title-color: $border 75%;
         padding-right: 0;
         &:focus {
             border: none;
             border-top: solid $border;
             border-left: solid $border;
+            border-title-color: $border;
             background: $panel 80%;
         }
     }
