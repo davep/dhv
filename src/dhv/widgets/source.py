@@ -9,6 +9,7 @@ from textual.widgets.text_area import Selection
 ##############################################################################
 # Local imports.
 from ..messages import LocationChanged
+from ..types import Location
 
 
 ##############################################################################
@@ -25,7 +26,7 @@ class Source(TextArea):
         )
         self.border_title = "Source"
 
-    def highlight_location(self, location: LocationChanged) -> None:
+    def highlight_location(self, location: Location) -> None:
         """Highlight the given location.
 
         Args:
@@ -52,7 +53,7 @@ class Source(TextArea):
     def _cursor_location_changed(self, message: TextArea.SelectionChanged) -> None:
         """Handle the cursor location changing."""
         message.stop()
-        self.post_message(LocationChanged(self, message.selection.end[0] + 1))
+        self.post_message(LocationChanged(self, Location(message.selection.end[0] + 1)))
 
 
 ### source.py ends here

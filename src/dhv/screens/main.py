@@ -181,13 +181,13 @@ class Main(EnhancedScreen[None]):
             message: The message to handle.
         """
         if self.focused != self.query_one(Source):
-            self.query_one(Source).highlight_location(message)
+            self.query_one(Source).highlight_location(message.location)
         if (
             self.focused != self.query_one(Disassembly)
-            and message.start_line is not None
+            and message.location.start_line is not None
         ):
             self.query_one(Disassembly).goto_first_instruction_on_line(
-                message.start_line
+                message.location.start_line
             )
 
     @on(Source.Changed)

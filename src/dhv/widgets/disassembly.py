@@ -2,7 +2,6 @@
 
 ##############################################################################
 # Python imports.
-from dataclasses import dataclass
 from dis import Bytecode, Instruction, opname
 from types import CodeType
 from typing import Final, Self
@@ -18,7 +17,6 @@ from rich.table import Table
 ##############################################################################
 # Textual imports.
 from textual import on
-from textual.message import Message
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
 
@@ -30,6 +28,7 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 # Local imports.
 from ..messages import LocationChanged
+from ..types import Location
 
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
@@ -281,14 +280,16 @@ class Disassembly(EnhancedOptionList):
         message.stop()
         if isinstance(message.option, Operation):
             self.post_message(
-                LocationChanged(self, start_line=message.option.operation.line_number)
+                LocationChanged(self, Location(message.option.operation.line_number))
                 if message.option.operation.positions is None
                 else LocationChanged(
-                    changer=self,
-                    start_line=message.option.operation.positions.lineno,
-                    start_column=message.option.operation.positions.col_offset,
-                    end_line=message.option.operation.positions.end_lineno,
-                    end_column=message.option.operation.positions.end_col_offset,
+                    self,
+                    Location(
+                        start_line=message.option.operation.positions.lineno,
+                        start_column=message.option.operation.positions.col_offset,
+                        end_line=message.option.operation.positions.end_lineno,
+                        end_column=message.option.operation.positions.end_col_offset,
+                    ),
                 )
             )
 
