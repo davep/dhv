@@ -66,6 +66,7 @@ class Main(EnhancedScreen[None]):
         border: none;
         border-top: solid $panel;
         border-left: solid $panel;
+        padding-right: 0;
         &:focus {
             border: none;
             border-top: solid $border;
