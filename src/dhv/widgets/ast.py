@@ -62,6 +62,13 @@ class AbstractSyntaxTree(Tree[Any]):
         self.border_title = "AST"
         self.show_guides = False
         self.guide_depth = 1
+        self._line_to_node_map: dict[int, ASTNode] = {}
+        """A map to help translate a line number to a node in the tree."""
+
+    def clear(self) -> Self:
+        """Clear down the AST tree."""
+        self._line_to_node_map = {}
+        return super().clear()
 
     @classmethod
     def maybe_add(cls, value: Any) -> bool:
@@ -131,7 +138,12 @@ class AbstractSyntaxTree(Tree[Any]):
         label = f"{escape(item.__class__.__name__)}"
         if isinstance(item, (ClassDef, FunctionDef, AsyncFunctionDef)):
             label = f"{label} [dim italic]{escape(item.name)}[/]"
-        return to_node.add(label, data=item)
+        node = to_node.add(label, data=item)
+        if (
+            location := self._location_of(to_node)
+        ) is not None and location.line_number not in self._line_to_node_map:
+            self._line_to_node_map[location.line_number] = node
+        return node
 
     @_base_node.register
     def _(self, item: str, to_node: ASTNode) -> ASTNode:
@@ -206,6 +218,16 @@ class AbstractSyntaxTree(Tree[Any]):
         if location := self._location_of(message.node):
             message.stop()
             self.post_message(LocationChanged(self, location))
+
+    def goto_first_node_on_line(self, line: int) -> None:
+        """Go to the first node that's related to the given line.
+
+        Args:
+            line: The line to find a node for.
+        """
+        if (node := self._line_to_node_map.get(line)) is not None:
+            with self.prevent(Tree.NodeHighlighted):
+                self.move_cursor(node)
 
 
 ### ast.py ends here
