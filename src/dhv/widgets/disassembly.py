@@ -2,7 +2,6 @@
 
 ##############################################################################
 # Python imports.
-from dataclasses import dataclass
 from dis import Bytecode, Instruction, opname
 from types import CodeType
 from typing import Final, Self
@@ -18,7 +17,6 @@ from rich.table import Table
 ##############################################################################
 # Textual imports.
 from textual import on
-from textual.message import Message
 from textual.reactive import var
 from textual.widgets.option_list import Option, OptionDoesNotExist
 
@@ -26,6 +24,11 @@ from textual.widgets.option_list import Option, OptionDoesNotExist
 # Textual enhanced imports.
 from textual_enhanced.binding import HelpfulBinding
 from textual_enhanced.widgets import EnhancedOptionList
+
+##############################################################################
+# Local imports.
+from ..messages import LocationChanged
+from ..types import Location
 
 ##############################################################################
 LINE_NUMBER_WIDTH: Final[int] = 6
@@ -189,6 +192,7 @@ class Disassembly(EnhancedOptionList):
         super().__init__(id=id, classes=classes, disabled=disabled)
         self._line_map: dict[int, int] = {}
         """A map of line numbers to locations within the disassembly display."""
+        self.border_title = "Disassembly"
 
     def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
         """Add the operations from the given code.
@@ -264,13 +268,6 @@ class Disassembly(EnhancedOptionList):
         """React to the show opcodes flag being toggled."""
         self._repopulate()
 
-    @dataclass
-    class InstructionHighlighted(Message):
-        """Message posted when an instruction is highlighted."""
-
-        instruction: Instruction
-        """The highlighted instruction."""
-
     @on(EnhancedOptionList.OptionHighlighted)
     def _instruction_highlighted(
         self, message: EnhancedOptionList.OptionHighlighted
@@ -282,7 +279,19 @@ class Disassembly(EnhancedOptionList):
         """
         message.stop()
         if isinstance(message.option, Operation):
-            self.post_message(self.InstructionHighlighted(message.option.operation))
+            self.post_message(
+                LocationChanged(self, Location(message.option.operation.line_number))
+                if message.option.operation.positions is None
+                else LocationChanged(
+                    self,
+                    Location(
+                        start_line=message.option.operation.positions.lineno,
+                        start_column=message.option.operation.positions.col_offset,
+                        end_line=message.option.operation.positions.end_lineno,
+                        end_column=message.option.operation.positions.end_col_offset,
+                    ),
+                )
+            )
 
     @on(EnhancedOptionList.OptionSelected)
     def _maybe_jump_to_code(self, message: EnhancedOptionList.OptionSelected) -> None:
