@@ -16,6 +16,12 @@ from ..types import Location
 class Source(TextArea):
     """Widget that displays Python source code."""
 
+    HELP = """
+    ## Python Source
+
+    This panel is the Python source code that you're exploring.
+    """
+
     def __init__(self) -> None:
         """Initialise the widget."""
         super().__init__(
