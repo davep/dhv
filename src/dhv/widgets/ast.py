@@ -41,6 +41,12 @@ class AbstractSyntaxTree(Tree[Any]):
     }
     """
 
+    HELP = """
+    ## Abstract Syntax Tree
+
+    This panel is the abstract syntax tree of the Python source code.
+    """
+
     code: var[str | None] = var(None)
     """The code to show the AST of."""
 
