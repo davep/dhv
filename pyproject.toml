@@ -1,6 +1,6 @@
 [project]
 name = "dhv"
-version = "0.2.0"
+version = "0.3.0"
 description = "A tool to dive into Python code"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
