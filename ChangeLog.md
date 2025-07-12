@@ -1,5 +1,12 @@
 # DHV ChangeLog
 
+## v0.3.0
+
+**Released: 2025-07-12**
+
+- Added support for viewing the AST of the Python code.
+  ([#8](https://github.com/davep/dhv/pull/8))
+
 ## v0.2.0
 
 **Released: 2025-07-09**
