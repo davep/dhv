@@ -48,10 +48,8 @@ class Main(EnhancedScreen[None]):
     TITLE = f"DHV v{__version__}"
 
     DEFAULT_CSS = """
-    Main {
-        &.--horizontal {
-            layout: horizontal;
-        }
+    Main.--horizontal {
+        layout: horizontal;
     }
 
     Disassembly, AbstractSyntaxTree {
