@@ -48,16 +48,8 @@ class Main(EnhancedScreen[None]):
     TITLE = f"DHV v{__version__}"
 
     DEFAULT_CSS = """
-    Main {
-        &.--horizontal {
-            layout: horizontal;
-        }
-    }
-
-    Disassembly, AbstractSyntaxTree {
-        &.--hidden {
-            display: none;
-        }
+    Main.--horizontal {
+        layout: horizontal;
     }
 
     Source, Disassembly, AbstractSyntaxTree {
@@ -74,6 +66,9 @@ class Main(EnhancedScreen[None]):
             border-left: solid $border;
             border-title-color: $border;
             background: $panel 80%;
+        }
+        &.--hidden {
+            display: none;
         }
     }
     """

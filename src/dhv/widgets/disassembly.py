@@ -281,14 +281,14 @@ class Disassembly(EnhancedOptionList):
         if isinstance(message.option, Operation):
             self.post_message(
                 LocationChanged(self, Location(message.option.operation.line_number))
-                if message.option.operation.positions is None
+                if (position := message.option.operation.positions) is None
                 else LocationChanged(
                     self,
                     Location(
-                        start_line=message.option.operation.positions.lineno,
-                        start_column=message.option.operation.positions.col_offset,
-                        end_line=message.option.operation.positions.end_lineno,
-                        end_column=message.option.operation.positions.end_col_offset,
+                        position.lineno,
+                        position.col_offset,
+                        position.end_lineno,
+                        position.end_col_offset,
                     ),
                 )
             )
@@ -320,9 +320,14 @@ class Disassembly(EnhancedOptionList):
                         )
 
     def goto_first_instruction_on_line(self, line: int) -> None:
-        """Go to the first instruction for a given line number."""
+        """Go to the first instruction for a given line number.
+
+        Args:
+            line: The line number to find the first instruction for.
+        """
         if line in self._line_map:
-            self.highlighted = self._line_map[line]
+            with self.prevent(EnhancedOptionList.OptionHighlighted):
+                self.highlighted = self._line_map[line]
 
     def action_opcode_documentation(self) -> None:
         """Handle a request to view the opcode's documentation."""
