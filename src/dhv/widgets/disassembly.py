@@ -322,7 +322,8 @@ class Disassembly(EnhancedOptionList):
     def goto_first_instruction_on_line(self, line: int) -> None:
         """Go to the first instruction for a given line number."""
         if line in self._line_map:
-            self.highlighted = self._line_map[line]
+            with self.prevent(EnhancedOptionList.OptionHighlighted):
+                self.highlighted = self._line_map[line]
 
     def action_opcode_documentation(self) -> None:
         """Handle a request to view the opcode's documentation."""
