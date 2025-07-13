@@ -320,7 +320,11 @@ class Disassembly(EnhancedOptionList):
                         )
 
     def goto_first_instruction_on_line(self, line: int) -> None:
-        """Go to the first instruction for a given line number."""
+        """Go to the first instruction for a given line number.
+
+        Args:
+            line: The line number to find the first instruction for.
+        """
         if line in self._line_map:
             with self.prevent(EnhancedOptionList.OptionHighlighted):
                 self.highlighted = self._line_map[line]
