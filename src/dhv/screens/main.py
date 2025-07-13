@@ -52,12 +52,6 @@ class Main(EnhancedScreen[None]):
         layout: horizontal;
     }
 
-    Disassembly, AbstractSyntaxTree {
-        &.--hidden {
-            display: none;
-        }
-    }
-
     Source, Disassembly, AbstractSyntaxTree {
         width: 1fr;
         height: 1fr;
@@ -72,6 +66,9 @@ class Main(EnhancedScreen[None]):
             border-left: solid $border;
             border-title-color: $border;
             background: $panel 80%;
+        }
+        &.--hidden {
+            display: none;
         }
     }
     """
