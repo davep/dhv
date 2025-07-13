@@ -281,14 +281,14 @@ class Disassembly(EnhancedOptionList):
         if isinstance(message.option, Operation):
             self.post_message(
                 LocationChanged(self, Location(message.option.operation.line_number))
-                if message.option.operation.positions is None
+                if (position := message.option.operation.positions) is None
                 else LocationChanged(
                     self,
                     Location(
-                        start_line=message.option.operation.positions.lineno,
-                        start_column=message.option.operation.positions.col_offset,
-                        end_line=message.option.operation.positions.end_lineno,
-                        end_column=message.option.operation.positions.end_col_offset,
+                        position.lineno,
+                        position.col_offset,
+                        position.end_lineno,
+                        position.end_col_offset,
                     ),
                 )
             )
