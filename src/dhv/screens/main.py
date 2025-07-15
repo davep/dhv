@@ -296,6 +296,8 @@ class Main(EnhancedScreen[None]):
             message: The requesting the theme change.
         """
         self.query_one(Source).theme = message.theme
+        if message.theme == "css":  # https://github.com/Textualize/textual/issues/5964
+            self.query_one(Source).styles.background = None
         with update_configuration() as config:
             config.code_theme = message.theme
 
