@@ -4,6 +4,7 @@
 # Local imports.
 from .disassembly import ToggleOffsets, ToggleOpcodes
 from .main import (
+    ChangeCodeTheme,
     LoadFile,
     NewCode,
     ShowASTOnly,
@@ -15,6 +16,7 @@ from .main import (
 ##############################################################################
 # Exports.
 __all__ = [
+    "ChangeCodeTheme",
     "LoadFile",
     "NewCode",
     "ShowASTOnly",
