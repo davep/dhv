@@ -7,6 +7,7 @@
 - Added a command to set the theme for the code editor panel.
   ([#12](https://github.com/davep/dhv/pull/12))
 - Added support for jumping to the AST documentation from the AST panel.
+  ([#13](https://github.com/davep/dhv/pull/13))
 
 ## v0.3.0
 
