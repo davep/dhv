@@ -151,8 +151,8 @@ class Disassembly(EnhancedOptionList):
 
     BINDINGS = [
         HelpfulBinding(
-            "o",
-            "opcode_documentation",
+            "a",
+            "about",
             "About opcode",
             tooltip="Show the opcode's documentation in the Python documentation",
         )
@@ -329,7 +329,7 @@ class Disassembly(EnhancedOptionList):
             with self.prevent(EnhancedOptionList.OptionHighlighted):
                 self.highlighted = self._line_map[line]
 
-    def action_opcode_documentation(self) -> None:
+    def action_about(self) -> None:
         """Handle a request to view the opcode's documentation."""
         if self.highlighted is not None and isinstance(
             option := self.get_option_at_index(self.highlighted), Operation

@@ -5,6 +5,7 @@
 from ast import AST, AsyncFunctionDef, ClassDef, FunctionDef, parse
 from functools import singledispatchmethod
 from typing import Any, Self
+from webbrowser import open_new
 
 ##############################################################################
 # Rich imports.
@@ -16,6 +17,10 @@ from textual import on
 from textual.reactive import var
 from textual.widgets import Tree
 from textual.widgets.tree import TreeNode
+
+##############################################################################
+# Textual enhanced imports.
+from textual_enhanced.binding import HelpfulBinding
 
 ##############################################################################
 # Local imports.
@@ -41,10 +46,21 @@ class AbstractSyntaxTree(Tree[Any]):
     }
     """
 
+    BINDINGS = [
+        HelpfulBinding(
+            "a",
+            "about",
+            "About AST",
+            tooltip="Show the AST entry's documentation in the Python documentation",
+        )
+    ]
+
     HELP = """
     ## Abstract Syntax Tree
 
     This panel is the abstract syntax tree of the Python source code.
+
+    The following keys can be used as shortcuts in this panel:
     """
 
     code: var[str | None] = var(None)
@@ -234,6 +250,40 @@ class AbstractSyntaxTree(Tree[Any]):
         if (node := self._line_to_node_map.get(line)) is not None:
             with self.prevent(Tree.NodeHighlighted):
                 self.move_cursor(node)
+
+    def _closest_ast(self, node: ASTNode) -> AST | None:
+        """Get the closest AST item to the given tree node.
+
+        Args:
+            node: The node to get the AST from.
+
+        Returns:
+            The closest AST entry, or `None` if none found.
+        """
+        if isinstance(node.data, AST):
+            return node.data
+        return self._closest_ast(node.parent) if node.parent else None
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """Check if an action is possible to perform right now.
+
+        Args:
+            action: The action to perform.
+            parameters: The parameters of the action.
+
+        Returns:
+            `True` if it can perform, `False` or `None` if not.
+        """
+        if action == "about":
+            return bool(self.root.children)
+        return True
+
+    def action_about(self) -> None:
+        """Handle a request to view the AST item's documentation."""
+        if self.cursor_node and (ast := self._closest_ast(self.cursor_node)):
+            open_new(
+                f"https://docs.python.org/3/library/ast.html#ast.{ast.__class__.__name__}"
+            )
 
 
 ### ast.py ends here
