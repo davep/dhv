@@ -2,11 +2,12 @@
 
 ##############################################################################
 # Local imports.
+from .code_theme import SetCodeTheme
 from .location import LocationChanged
 
 ##############################################################################
 # Exports.
-__all__ = ["LocationChanged"]
+__all__ = ["LocationChanged", "SetCodeTheme"]
 
 
 ### __init__.py ends here

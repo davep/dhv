@@ -13,6 +13,7 @@ from textual_enhanced.commands import (
 ##############################################################################
 # Local imports.
 from ..commands import (
+    ChangeCodeTheme,
     LoadFile,
     NewCode,
     ShowASTOnly,
@@ -34,6 +35,7 @@ class MainCommands(CommandsProvider):
         Yields:
             The commands for the command palette.
         """
+        yield ChangeCodeTheme()
         yield ChangeTheme()
         yield Help()
         yield Quit()

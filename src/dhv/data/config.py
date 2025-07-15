@@ -43,6 +43,9 @@ class Configuration:
     show_ast: bool = False
     """Should we show the AST panel?"""
 
+    code_theme: str | None = None
+    """The theme for the code editor."""
+
 
 ##############################################################################
 def configuration_file() -> Path:

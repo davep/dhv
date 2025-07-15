@@ -51,4 +51,11 @@ class ShowDisassemblyAndAST(Command):
     BINDING_KEY = "ctrl+o"
 
 
+##############################################################################
+class ChangeCodeTheme(Command):
+    """Change the theme of the Python code editor."""
+
+    BINDING_KEY = "ctrl+f9"
+
+
 ### main.py ends here

@@ -26,6 +26,7 @@ from textual_fspicker import FileOpen, Filters
 # Local imports.
 from .. import __version__
 from ..commands import (
+    ChangeCodeTheme,
     LoadFile,
     NewCode,
     ShowASTOnly,
@@ -36,8 +37,8 @@ from ..commands import (
     ToggleOpcodes,
 )
 from ..data import load_configuration, update_configuration
-from ..messages import LocationChanged
-from ..providers import MainCommands
+from ..messages import LocationChanged, SetCodeTheme
+from ..providers import CodeThemeCommands, MainCommands
 from ..widgets import AbstractSyntaxTree, Disassembly, Source
 
 
@@ -87,6 +88,7 @@ class Main(EnhancedScreen[None]):
         NewCode,
         LoadFile,
         # Everything else.
+        ChangeCodeTheme,
         ChangeTheme,
         SwitchLayout,
         ToggleOffsets,
@@ -153,6 +155,7 @@ class Main(EnhancedScreen[None]):
         self.show_disassembly = config.show_disassembly
         self.query_one(Disassembly).show_offset = config.show_offsets
         self.query_one(Disassembly).show_opcodes = config.show_opcodes
+        self.query_one(Source).theme = config.code_theme or "css"
         if isinstance(to_open := self._arguments.source, Path):
             self._show_source(to_open)
 
@@ -280,6 +283,21 @@ class Main(EnhancedScreen[None]):
         self.show_disassembly = True
         self.show_ast = True
         self._save_panels()
+
+    def action_change_code_theme_command(self) -> None:
+        """Change the theme used for the code editor."""
+        self.show_palette(CodeThemeCommands)
+
+    @on(SetCodeTheme)
+    def _set_code_theme(self, message: SetCodeTheme) -> None:
+        """Set the theme used by the code editor.
+
+        Args:
+            message: The requesting the theme change.
+        """
+        self.query_one(Source).theme = message.theme
+        with update_configuration() as config:
+            config.code_theme = message.theme
 
 
 ### main.py ends here
