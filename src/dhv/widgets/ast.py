@@ -50,7 +50,7 @@ class AbstractSyntaxTree(Tree[Any]):
         HelpfulBinding(
             "a",
             "about",
-            "About AST entry",
+            "About AST",
             tooltip="Show the AST entry's documentation in the Python documentation",
         )
     ]
