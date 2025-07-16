@@ -1,8 +1,8 @@
 # DHV ChangeLog
 
-## Unreleased
+## v0.4.0
 
-**Released: WiP**
+**Released: 2025-07-16**
 
 - Added a command to set the theme for the code editor panel.
   ([#12](https://github.com/davep/dhv/pull/12))
