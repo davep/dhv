@@ -1,6 +1,6 @@
 # DHV
 
-![DHV](https://raw.githubusercontent.com/davep/dhv/refs/heads/main/.images/dhv.gif)
+![DHV](https://raw.githubusercontent.com/davep/dhv/refs/heads/main/.images/dhv-social-banner.png)
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/davep/dhv/style-and-lint.yaml)](https://github.com/davep/dhv/actions)
 [![GitHub commits since latest release](https://img.shields.io/github/commits-since/davep/dhv/latest)](https://github.com/davep/dhv/commits/main/)
@@ -17,6 +17,8 @@ access to [bytecode disassembly](https://docs.python.org/3/library/dis.html)
 and [the abstract syntax tree](https://docs.python.org/3/library/ast.html).
 If you're curious about what's "under the hood" when it comes to your Python
 source, this tool should help satisfy some of that curiosity.
+
+![DHV in action](https://raw.githubusercontent.com/davep/dhv/refs/heads/main/.images/dhv.gif)
 
 > [!IMPORTANT]
 >
