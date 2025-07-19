@@ -45,9 +45,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/davep/dhv"
+Homepage = "https://dhv.davep.dev/"
 Repository = "https://github.com/davep/dhv"
-Documentation = "https://github.com/davep/dhv"
+Documentation = "https://dhv.davep.dev/"
 Source = "https://github.com/davep/dhv"
 Issues = "https://github.com/davep/dhv/issues"
 Discussions = "https://github.com/davep/dhv/discussions"
@@ -68,6 +68,8 @@ dev-dependencies = [
     "mypy>=1.16.1",
     "textual-dev>=1.7.0",
     "codespell>=2.4.1",
+    "mkdocs-material>=9.6.15",
+    "markdown-exec>=1.11.0",
 ]
 
 [tool.hatch.metadata]
