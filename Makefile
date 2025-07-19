@@ -1,11 +1,13 @@
 app    := dhv
 src    := src/
+docs   := docs/
 run    := rye run
 test   := rye test
 python := $(run) python
 lint   := rye lint -- --select I
 fmt    := rye fmt
 mypy   := $(run) mypy
+mkdocs := $(run) mkdocs
 spell  := $(run) codespell
 
 ##############################################################################
@@ -64,10 +66,24 @@ stricttypecheck:	        # Perform a strict static type checks with mypy
 
 .PHONY: spellcheck
 spellcheck:			# Spell check the code
-	$(spell) *.md $(src)
+	$(spell) *.md $(src) $(docs)
 
 .PHONY: checkall
 checkall: spellcheck codestyle lint stricttypecheck # Check all the things
+
+##############################################################################
+# Documentation.
+.PHONY: docs
+docs:                           # Generate the system documentation
+	$(mkdocs) build
+
+.PHONY: rtfm
+rtfm:				# Locally read the library documentation
+	$(mkdocs) serve
+
+.PHONY: publishdocs
+publishdocs: clean-docs	# Set up the docs for publishing
+	$(mkdocs) gh-deploy
 
 ##############################################################################
 # Package/publish.
@@ -109,7 +125,11 @@ clean-packaging:		# Clean the package building files
 	rm -rf dist
 
 .PHONY: clean
-clean: clean-packaging # Clean the build directories
+clean: clean-packaging clean-docs # Clean the build directories
+
+.PHONY: clean-docs
+clean-docs:			# Clean up the documentation building files
+	rm -rf site .screenshot_cache
 
 .PHONY: realclean
 realclean: clean		# Clean the venv and build directories

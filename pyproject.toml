@@ -45,9 +45,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/davep/dhv"
+Homepage = "https://dhv.davep.dev/"
 Repository = "https://github.com/davep/dhv"
-Documentation = "https://github.com/davep/dhv"
+Documentation = "https://dhv.davep.dev/"
 Source = "https://github.com/davep/dhv"
 Issues = "https://github.com/davep/dhv/issues"
 Discussions = "https://github.com/davep/dhv/discussions"
