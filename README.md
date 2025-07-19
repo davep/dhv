@@ -2,6 +2,14 @@
 
 ![DHV](https://raw.githubusercontent.com/davep/dhv/refs/heads/main/.images/dhv.gif)
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/davep/dhv/style-and-lint.yaml)](https://github.com/davep/dhv/actions)
+[![GitHub commits since latest release](https://img.shields.io/github/commits-since/davep/dhv/latest)](https://github.com/davep/dhv/commits/main/)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/davep/dhv)](https://github.com/davep/dhv/issues)
+[![GitHub Release Date](https://img.shields.io/github/release-date/davep/dhv)](https://github.com/davep/dhv/releases)
+[![PyPI - License](https://img.shields.io/pypi/l/dhv)](https://github.com/davep/dhv/blob/main/LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dhv)](https://github.com/davep/dhv/blob/main/pyproject.toml)
+[![PyPI - Version](https://img.shields.io/pypi/v/dhv)](https://pypi.org/project/dhv/)
+
 ## Introduction
 
 DHV is a terminal-based tool for diving into Python code, the emphasis for
