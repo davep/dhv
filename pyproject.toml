@@ -69,6 +69,7 @@ dev-dependencies = [
     "textual-dev>=1.7.0",
     "codespell>=2.4.1",
     "mkdocs-material>=9.6.15",
+    "markdown-exec>=1.11.0",
 ]
 
 [tool.hatch.metadata]

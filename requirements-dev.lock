@@ -63,6 +63,7 @@ markdown==3.8.2
     # via mkdocs
     # via mkdocs-material
     # via pymdown-extensions
+markdown-exec==1.11.0
 markdown-it-py==3.0.0
     # via mdit-py-plugins
     # via rich
@@ -113,6 +114,7 @@ pygments==2.19.2
     # via mkdocs-material
     # via rich
 pymdown-extensions==10.16
+    # via markdown-exec
     # via mkdocs-material
 python-dateutil==2.9.0.post0
     # via ghp-import
