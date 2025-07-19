@@ -12,8 +12,11 @@
 
 ## Introduction
 
-DHV is a terminal-based tool for diving into Python code, the emphasis for
-now being on [bytecode disassembly](https://docs.python.org/3/library/dis.html).
+DHV is a terminal-based tool for diving into Python code, giving easy visual
+access to [bytecode disassembly](https://docs.python.org/3/library/dis.html)
+and [the abstract syntax tree](https://docs.python.org/3/library/ast.html).
+If you're curious about what's "under the hood" when it comes to your Python
+source, this tool should help satisfy some of that curiosity.
 
 > [!IMPORTANT]
 >
