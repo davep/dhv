@@ -68,6 +68,7 @@ dev-dependencies = [
     "mypy>=1.16.1",
     "textual-dev>=1.7.0",
     "codespell>=2.4.1",
+    "mkdocs-material>=9.6.15",
 ]
 
 [tool.hatch.metadata]
