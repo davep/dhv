@@ -26,7 +26,7 @@ pygments==2.19.2
     # via rich
 rich==14.0.0
     # via textual
-textual==3.7.0
+textual==4.0.0
     # via dhv
     # via textual-enhanced
     # via textual-fspicker
@@ -35,6 +35,7 @@ textual-enhanced==0.13.0
 textual-fspicker==0.4.1
     # via dhv
 tree-sitter==0.24.0
+    # via dhv
     # via textual
 tree-sitter-bash==0.25.0
     # via textual

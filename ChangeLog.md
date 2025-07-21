@@ -1,5 +1,13 @@
 # DHV ChangeLog
 
+## v0.4.1
+
+**Released: 2025-07-21**
+
+- Pinned `tree-sitter` to `<0.25.0` because Textual isn't compatible with
+  the latest version and now causes a crash (see
+  [issues#5976](https://github.com/Textualize/textual/issues/5976)).
+
 ## v0.4.0
 
 **Released: 2025-07-16**

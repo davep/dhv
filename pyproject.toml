@@ -1,6 +1,6 @@
 [project]
 name = "dhv"
-version = "0.4.0"
+version = "0.4.1"
 description = "A tool to dive into Python code"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
@@ -10,6 +10,7 @@ dependencies = [
     "textual-enhanced>=0.13.0",
     "textual-fspicker>=0.4.1",
     "xdg-base-dirs>=6.0.2",
+    "tree-sitter<0.25.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.13"
