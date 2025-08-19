@@ -1,5 +1,11 @@
 # DHV ChangeLog
 
+## Unrelased
+
+**Released: WiP**
+
+- Migrated from `rye` to `uv` for development management.
+
 ## v0.4.1
 
 **Released: 2025-07-21**
