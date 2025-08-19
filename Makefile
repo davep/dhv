@@ -1,14 +1,17 @@
-app    := dhv
-src    := src/
-docs   := docs/
-run    := rye run
-test   := rye test
-python := $(run) python
-lint   := rye lint -- --select I
-fmt    := rye fmt
-mypy   := $(run) mypy
-mkdocs := $(run) mkdocs
-spell  := $(run) codespell
+app     := dhv
+src     := src/
+docs    := docs/
+run     := uv run
+sync    := uv sync
+build   := uv build
+publish := uv publish --username=__token__ --keyring-provider=subprocess
+python  := $(run) python
+ruff    := $(run) ruff
+lint    := $(ruff) check --select I
+fmt     := $(ruff) format
+mypy    := $(run) mypy
+mkdocs  := $(run) mkdocs
+spell   := $(run) codespell
 
 ##############################################################################
 # Local "interactive testing" of the code.
@@ -32,7 +35,7 @@ console:			# Run the textual console
 # Setup/update packages the system requires.
 .PHONY: ready
 ready:				# Make the development environment ready to go
-	rye sync
+	$(sync)
 
 .PHONY: setup
 setup: ready			# Set up the repository for development
@@ -40,7 +43,7 @@ setup: ready			# Set up the repository for development
 
 .PHONY: update
 update:				# Update all dependencies
-	rye sync --update-all
+	$(sync) --upgrade
 
 .PHONY: resetup
 resetup: realclean		# Recreate the virtual environment from scratch
@@ -89,19 +92,19 @@ publishdocs: clean-docs	# Set up the docs for publishing
 # Package/publish.
 .PHONY: package
 package:			# Package the library
-	rye build
+	$(build)
 
 .PHONY: spackage
 spackage:			# Create a source package for the library
-	rye build --sdist
+	$(build) --sdist
 
 .PHONY: testdist
 testdist: package			# Perform a test distribution
-	rye publish --yes --skip-existing --repository testpypi --repository-url https://test.pypi.org/legacy/
+	$(publish) --index testpypi
 
 .PHONY: dist
 dist: package			# Upload to pypi
-	rye publish --yes --skip-existing
+	$(publish)
 
 ##############################################################################
 # Utility.
