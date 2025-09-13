@@ -8,8 +8,9 @@
   ([#21](https://github.com/davep/dhv/pull/21))
 - Added Python 3.14 as a tested/supported Python version.
   ([#22](https://github.com/davep/dhv/pull/22))
-- Unpinned `tree-sitter`.
+- Unpinned `tree-sitter`. ([#24](https://github.com/davep/dhv/pull/24))
 - Pinned to Textual v6.1.0 or later.
+  ([#24](https://github.com/davep/dhv/pull/24))
 
 ## v0.4.1
 
