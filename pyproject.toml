@@ -62,7 +62,9 @@ build-backend = "uv_build"
 
 [tool.uv]
 managed = true
-dev-dependencies = [
+
+[dependency-groups]
+dev = [
     "pre-commit>=4.2.0",
     "mypy>=1.16.1",
     "textual-dev>=1.7.0",
