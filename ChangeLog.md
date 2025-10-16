@@ -6,6 +6,9 @@
 
 - Added the Python version to the title bar.
   ([#30](https://github.com/davep/dhv/pull/30))
+- Added a workaround for at least one new opcode in Python 3.14
+  (`LOAD_SMALL_INT`) having an empty `argrepr` when it has an `argval`.
+  ([#31](https://github.com/davep/dhv/pull/31))
 
 ## v0.5.0
 
