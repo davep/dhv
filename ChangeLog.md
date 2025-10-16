@@ -1,8 +1,8 @@
 # DHV ChangeLog
 
-## Unreleased
+## v0.6.0
 
-**Released: WiP**
+**Released: 2025-10-16**
 
 - Added the Python version to the title bar.
   ([#30](https://github.com/davep/dhv/pull/30))
