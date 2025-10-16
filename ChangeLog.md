@@ -1,8 +1,8 @@
 # DHV ChangeLog
 
-## Unreleased
+## v0.5.0
 
-**Released: WiP**
+**Released: 2025-10-16**
 
 - Added Python 3.15 as a tested/supported Python version.
   ([#28](https://github.com/davep/dhv/pull/28))
