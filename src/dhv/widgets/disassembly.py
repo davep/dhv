@@ -95,7 +95,15 @@ class Operation(Option):
             else operation.opname,
             f"[dim]code@[/]{hex(id(operation.argval))}"
             if isinstance(operation.argval, CodeType)
-            else escape(operation.argrepr),
+            # With Python 3.14, LOAD_SMALL_INT at least has no populated
+            # argrepr value despite having a value, so here we use argrepr
+            # if it has a value, and if not we repr any non-None argval.
+            # This could result in a false negative I guess, but I'd hope
+            # that mostly argrepr does the right thing.
+            else escape(
+                operation.argrepr
+                or (repr(operation.argval) if operation.argval is not None else "")
+            ),
         )
         super().__init__(
             Group(
