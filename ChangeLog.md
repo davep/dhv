@@ -1,5 +1,11 @@
 # DHV ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added the Python version to the title bar.
+
 ## v0.5.0
 
 **Released: 2025-10-16**

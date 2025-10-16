@@ -4,6 +4,7 @@
 # Python imports.
 from argparse import Namespace
 from pathlib import Path
+from platform import python_version
 
 ##############################################################################
 # Textual imports.
@@ -47,6 +48,7 @@ class Main(EnhancedScreen[None]):
     """The main screen for the application."""
 
     TITLE = f"DHV v{__version__}"
+    SUB_TITLE = f"Python v{python_version()}"
 
     DEFAULT_CSS = """
     Main.--horizontal {
