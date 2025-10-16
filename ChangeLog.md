@@ -5,6 +5,7 @@
 **Released: WiP**
 
 - Added the Python version to the title bar.
+  ([#30](https://github.com/davep/dhv/pull/30))
 
 ## v0.5.0
 
