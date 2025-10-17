@@ -3,6 +3,7 @@
 ##############################################################################
 # Python imports.
 from dis import Bytecode, Instruction, opname
+from statistics import median_high
 from types import CodeType
 from typing import Final, Self
 from webbrowser import open_new
@@ -35,8 +36,8 @@ LINE_NUMBER_WIDTH: Final[int] = 6
 """Width for line numbers."""
 OFFSET_WIDTH: Final[int] = 4
 """The width of the display of the offset."""
-OPNAME_WIDTH: Final[int] = max(len(operation) for operation in opname)
-"""Get the maximum length of an operation name."""
+OPNAME_WIDTH: Final[int] = median_high(len(operation) for operation in opname) + 10
+"""The default width to use for opcode names."""
 
 
 ##############################################################################
@@ -63,6 +64,7 @@ class Operation(Option):
         self,
         operation: Instruction,
         *,
+        opname_width: int = OPNAME_WIDTH,
         show_offset: bool = False,
         show_opcode: bool = False,
         code: CodeType | None = None,
@@ -83,7 +85,7 @@ class Operation(Option):
         display = Table.grid(expand=True, padding=1)
         display.add_column(width=LINE_NUMBER_WIDTH)
         display.add_column(width=OFFSET_WIDTH if show_offset else 0)
-        display.add_column(width=OPNAME_WIDTH)
+        display.add_column(width=opname_width)
         display.add_column(ratio=1)
         display.add_row(
             str(operation.line_number)
@@ -163,7 +165,21 @@ class Disassembly(EnhancedOptionList):
             "about",
             "About opcode",
             tooltip="Show the opcode's documentation in the Python documentation",
-        )
+        ),
+        HelpfulBinding(
+            "o",
+            "opname(1)",
+            "Opname width+",
+            show=False,
+            tooltip="Increase the width of the opname column",
+        ),
+        HelpfulBinding(
+            "O",
+            "opname(-1)",
+            "Opname width-",
+            show=False,
+            tooltip="Decrease the width of the opname column",
+        ),
     ]
 
     HELP = """
@@ -182,6 +198,9 @@ class Disassembly(EnhancedOptionList):
 
     show_opcodes: var[bool] = var(False, init=False)
     """Should we show the opcodes in the disassembly?"""
+
+    opname_width: var[int] = var(OPNAME_WIDTH)
+    """The width of opnames in the display."""
 
     error: var[bool] = var(False)
     """Is there an error with the code we've been given?"""
@@ -239,6 +258,7 @@ class Disassembly(EnhancedOptionList):
             self.add_option(
                 Operation(
                     operation,
+                    opname_width=self.opname_width,
                     show_offset=self.show_offset,
                     show_opcode=self.show_opcodes,
                     code=operations.codeobj,
@@ -274,6 +294,10 @@ class Disassembly(EnhancedOptionList):
 
     def _watch_show_opcodes(self) -> None:
         """React to the show opcodes flag being toggled."""
+        self._repopulate()
+
+    def _watch_opname_width(self) -> None:
+        """React to the opname column width being changed."""
         self._repopulate()
 
     @on(EnhancedOptionList.OptionHighlighted)
@@ -345,6 +369,14 @@ class Disassembly(EnhancedOptionList):
             open_new(
                 f"https://docs.python.org/3/library/dis.html#opcode-{option.operation.opname}"
             )
+
+    def action_opname(self, change: int) -> None:
+        """Change the width of the opname column.
+
+        Args:
+            change: The amount of change to apply.
+        """
+        self.opname_width += change
 
 
 ### disassembly.py ends here
