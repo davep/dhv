@@ -1,8 +1,8 @@
 # DHV ChangeLog
 
-## Unreleased
+## v0.7.0
 
-**Released: WiP**
+**Released: 2025-10-20**
 
 - Reduced the default width of the opname "column".
   ([#35](https://github.com/davep/dhv/pull/35))
