@@ -5,6 +5,7 @@
 from collections import Counter
 from dis import Bytecode
 from operator import itemgetter
+from types import CodeType
 
 ##############################################################################
 # Textual imports.
@@ -79,6 +80,25 @@ class OpcodeCountsView(ModalScreen[None]):
             with Center():
                 yield Button(add_key("Close", "Esc"))
 
+    @classmethod
+    def _operation_count(cls, operations: Bytecode) -> Counter:
+        """Get the operation counts for the given code.
+
+        Args:
+            operations: The operations to take a count from.
+
+        Returns:
+            The count of operations within the code.
+        """
+        count = Counter(instruction.opname for instruction in operations)
+        for operation in operations:
+            if isinstance(operation.argval, CodeType):
+                try:
+                    count += cls._operation_count(Bytecode(operation.argval))
+                except SyntaxError:
+                    pass
+        return count
+
     def on_mount(self) -> None:
         """Populate the dialog once the DOM is loaded."""
         operations: Bytecode | None = None
@@ -91,7 +111,7 @@ class OpcodeCountsView(ModalScreen[None]):
             table.cursor_type = "row"
             table.add_columns("Opcode", "Count".rjust(10))
             for opcode, count in sorted(
-                Counter(instruction.opname for instruction in operations).items(),
+                self._operation_count(operations).items(),
                 key=itemgetter(1),
                 reverse=True,
             ):
