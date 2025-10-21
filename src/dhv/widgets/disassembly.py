@@ -6,7 +6,6 @@ from dis import Bytecode, Instruction, opname
 from statistics import median_high
 from types import CodeType
 from typing import Final, Self
-from webbrowser import open_new
 
 ##############################################################################
 # Rich imports.
@@ -29,6 +28,7 @@ from textual_enhanced.widgets import EnhancedOptionList
 ##############################################################################
 # Local imports.
 from ..messages import LocationChanged
+from ..python_docs import visit_operation
 from ..types import Location
 
 ##############################################################################
@@ -366,9 +366,7 @@ class Disassembly(EnhancedOptionList):
         if self.highlighted is not None and isinstance(
             option := self.get_option_at_index(self.highlighted), Operation
         ):
-            open_new(
-                f"https://docs.python.org/3/library/dis.html#opcode-{option.operation.opname}"
-            )
+            visit_operation(option.operation)
 
     def action_opname(self, change: int) -> None:
         """Change the width of the opname column.
