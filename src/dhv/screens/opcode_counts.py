@@ -81,7 +81,7 @@ class OpcodeCountsView(ModalScreen[None]):
                 yield Button(add_key("Close", "Esc"))
 
     @classmethod
-    def _operation_count(cls, operations: Bytecode) -> Counter:
+    def _operation_count(cls, operations: Bytecode) -> Counter[str]:
         """Get the operation counts for the given code.
 
         Args:
