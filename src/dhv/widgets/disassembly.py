@@ -5,7 +5,7 @@
 from dis import Bytecode, Instruction, opname
 from statistics import median_high
 from types import CodeType
-from typing import Final, Self
+from typing import Final, Iterator
 
 ##############################################################################
 # Rich imports.
@@ -221,59 +221,27 @@ class Disassembly(EnhancedOptionList):
         """A map of line numbers to locations within the disassembly display."""
         self.border_title = "Disassembly"
 
-    def _add_operations(self, code: str | CodeType, fresh: bool = False) -> Self:
-        """Add the operations from the given code.
+    def _make_options(self, code: Bytecode) -> Iterator[Code | Operation]:
+        """Make the options for the list from the given code.
 
         Args:
-            code: The code to add the operations from.
-            fresh: Is this a fresh add; should we clear the display?
+            code: The code to make the options from.
 
-        Returns:
-            Self.
+        Yields:
+            Either a `Code` or an `Operation` option.
         """
-
-        # Build the code up first.
-        try:
-            operations = Bytecode(code)
-        except SyntaxError:
-            # There was an error so nope out, but keep the display as is so
-            # the user can see what was and also doesn't keep getting code
-            # disappear and then appear again.
-            self.error = True
-            return self
-        self.error = False
-
-        # If this is a fresh add we start out by clearing everything down.
-        if fresh:
-            self.clear_options()
-            self._line_map = {}
-
-        # If we've been given a code object, rather than some source, add a
-        # marker for that.
-        if isinstance(code, CodeType):
-            self.add_option(Code(code))
-
-        # Add each operation...
-        for operation in operations:
-            self.add_option(
-                Operation(
-                    operation,
-                    opname_width=self.opname_width,
-                    show_offset=self.show_offset,
-                    show_opcode=self.show_opcodes,
-                    code=operations.codeobj,
-                )
+        for operation in code:
+            yield Operation(
+                operation,
+                opname_width=self.opname_width,
+                show_offset=self.show_offset,
+                show_opcode=self.show_opcodes,
+                code=code.codeobj,
             )
-            if operation.line_number is not None and operation.starts_line:
-                self._line_map[operation.line_number] = self.option_count - 1
-
-        # Now look for any operations that have code as their arguments, and
-        # add that code too.
-        for operation in operations:
+        for operation in code:
             if isinstance(operation.argval, CodeType):
-                self._add_operations(operation.argval)
-
-        return self
+                yield Code(operation.argval)
+                yield from self._make_options(Bytecode(operation.argval))
 
     def _watch_error(self) -> None:
         """React to the error state being toggled."""
@@ -281,8 +249,34 @@ class Disassembly(EnhancedOptionList):
 
     def _repopulate(self) -> None:
         """Fully repopulate the display."""
+        # Build the code up first.
+        try:
+            operations = Bytecode(self.code or "")
+        except SyntaxError:
+            # There was an error so nope out, but keep the display as is so
+            # the user can see what was and also doesn't keep getting code
+            # disappear and then appear again.
+            self.error = True
+            return
+        self.error = False
+
+        # Get the options and add them to the option list.
         with self.preserved_highlight:
-            self._add_operations(self.code or "", True)
+            self.clear_options().add_options(
+                options := list(self._make_options(operations))
+            )
+
+        # Build the line map.
+        line = 0
+        self._line_map = (line_map := {})
+        for option in options:
+            if (
+                isinstance(option, Operation)
+                and (operation := option.operation).starts_line
+                and operation.line_number is not None
+            ):
+                line_map[operation.line_number] = line
+            line += 1
 
     def _watch_code(self) -> None:
         """React to the code being changed."""

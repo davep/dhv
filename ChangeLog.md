@@ -1,5 +1,12 @@
 # DHV ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Simplified and optimised the `Disassembly` widget. While not instant, it
+  now populates a wee bit faster.
+
 ## v0.8.1
 
 **Released: 2025-10-22**
