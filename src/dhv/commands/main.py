@@ -62,7 +62,7 @@ class ChangeCodeTheme(Command):
 class OpcodeCounts(Command):
     """View the count of opcodes in the code"""
 
-    BINDING_KEY = "ctrl+o"
+    BINDING_KEY = "f5"
     SHOW_IN_FOOTER = True
 
 
