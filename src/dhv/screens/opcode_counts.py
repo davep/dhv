@@ -107,6 +107,7 @@ class OpcodeCountsView(ModalScreen[None]):
 
     def on_mount(self) -> None:
         """Populate the dialog once the DOM is loaded."""
+        count_width = 10
         operations: Bytecode | None = None
         try:
             operations = Bytecode(self._code)
@@ -115,13 +116,13 @@ class OpcodeCountsView(ModalScreen[None]):
         if operations is not None:
             table = self.query_one(DataTable)
             table.cursor_type = "row"
-            table.add_columns("Opcode", "Count".rjust(10))
+            table.add_columns("Opcode", "Count".rjust(count_width))
             for opcode, count in sorted(
                 self._operation_count(operations).items(),
                 key=itemgetter(1),
                 reverse=True,
             ):
-                table.add_row(opcode, f"{count:>10}", key=opcode)
+                table.add_row(opcode, f"{count:>{count_width}}", key=opcode)
 
     @on(Button.Pressed)
     def action_close(self) -> None:
