@@ -39,9 +39,14 @@ class OpcodeCountsView(ModalScreen[None]):
             border: panel $border;
             max-height: 80%;
 
+            #table-sizer {
+                height: auto;
+                max-height: 70vh;
+                width: auto;
+            }
+
             DataTable {
                 margin: 1 2;
-                height: auto;
                 width: auto;
                 background: $panel;
                 &:focus {
@@ -76,7 +81,8 @@ class OpcodeCountsView(ModalScreen[None]):
         """
         with Vertical() as dialog:
             dialog.border_title = "Opcode counts"
-            yield DataTable()
+            with Vertical(id="table-sizer"):
+                yield DataTable()
             with Center():
                 yield Button(add_key("Close", "Esc"))
 
