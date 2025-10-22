@@ -88,13 +88,13 @@ class Main(EnhancedScreen[None]):
         # Keep these together as they're bound to function keys and destined
         # for the footer.
         Help,
+        OpcodeCounts,
         Quit,
         NewCode,
         LoadFile,
         # Everything else.
         ChangeCodeTheme,
         ChangeTheme,
-        OpcodeCounts,
         SwitchLayout,
         ToggleOffsets,
         ToggleOpcodes,
@@ -216,6 +216,7 @@ class Main(EnhancedScreen[None]):
     def _code_changed(self) -> None:
         """Handle the fact that the code has changed."""
         self.code = self.query_one(Source).document.text
+        self.refresh_bindings()
 
     def action_new_code_command(self) -> None:
         """Handle the new code command."""
@@ -271,6 +272,27 @@ class Main(EnhancedScreen[None]):
             config.show_ast = self.show_ast
             config.show_disassembly = self.show_disassembly
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        """Check if an action is possible to perform right now.
+
+        Args:
+            action: The action to perform.
+            parameters: The parameters of the action.
+
+        Returns:
+            `True` if it can perform, `False` or `None` if not.
+        """
+        if not self.is_mounted:
+            # Surprisingly it seems that Textual's "dynamic bindings" can
+            # cause this method to be called before the DOM is up and
+            # running. This breaks the rule of least astonishment, I'd say,
+            # but okay let's be defensive... (when I can come up with a nice
+            # little MRE I'll report it).
+            return True
+        if action == OpcodeCounts.action_name():
+            return not self.query_one(Disassembly).error or None
+        return True
+
     def action_show_disassembly_only_command(self) -> None:
         """Show only the disassembly."""
         self.show_disassembly = True
@@ -295,8 +317,8 @@ class Main(EnhancedScreen[None]):
 
     def action_opcode_counts_command(self) -> None:
         """Show the count of opcodes in the current code."""
-        if self.code is not None and not self.query_one(Disassembly).error:
-            self.app.push_screen(OpcodeCountsView(self.code))
+        if not self.query_one(Disassembly).error:
+            self.app.push_screen(OpcodeCountsView(self.code or ""))
 
     @on(SetCodeTheme)
     def _set_code_theme(self, message: SetCodeTheme) -> None:

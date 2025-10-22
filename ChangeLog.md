@@ -7,6 +7,13 @@
 - Simplified and optimised the `Disassembly` widget. While not instant, it
   now populates a wee bit faster.
 
+## v0.8.1
+
+**Released: 2025-10-22**
+
+- Fixed shortcut clash with calling up the opcode count dialog.
+  ([#42](https://github.com/davep/dhv/pull/42))
+
 ## v0.8.0
 
 **Released: 2025-10-22**
