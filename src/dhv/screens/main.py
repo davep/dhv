@@ -88,13 +88,13 @@ class Main(EnhancedScreen[None]):
         # Keep these together as they're bound to function keys and destined
         # for the footer.
         Help,
+        OpcodeCounts,
         Quit,
         NewCode,
         LoadFile,
         # Everything else.
         ChangeCodeTheme,
         ChangeTheme,
-        OpcodeCounts,
         SwitchLayout,
         ToggleOffsets,
         ToggleOpcodes,
