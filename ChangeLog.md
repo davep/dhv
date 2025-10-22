@@ -1,5 +1,12 @@
 # DHV ChangeLog
 
+## Unreleased
+
+**Released: WiP**
+
+- Added an opcode count dialog.
+  ([#37](https://github.com/davep/dhv/pull/37))
+
 ## v0.7.0
 
 **Released: 2025-10-20**

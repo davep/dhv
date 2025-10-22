@@ -16,6 +16,7 @@ from ..commands import (
     ChangeCodeTheme,
     LoadFile,
     NewCode,
+    OpcodeCounts,
     ShowASTOnly,
     ShowDisassemblyAndAST,
     ShowDisassemblyOnly,
@@ -41,6 +42,7 @@ class MainCommands(CommandsProvider):
         yield Quit()
         yield LoadFile()
         yield NewCode()
+        yield OpcodeCounts()
         yield SwitchLayout()
         yield ToggleOffsets()
         yield ToggleOpcodes()

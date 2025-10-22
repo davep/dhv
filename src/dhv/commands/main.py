@@ -58,4 +58,12 @@ class ChangeCodeTheme(Command):
     BINDING_KEY = "ctrl+f9"
 
 
+##############################################################################
+class OpcodeCounts(Command):
+    """View the count of opcodes in the code"""
+
+    BINDING_KEY = "ctrl+o"
+    SHOW_IN_FOOTER = True
+
+
 ### main.py ends here

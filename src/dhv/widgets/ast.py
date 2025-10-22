@@ -5,7 +5,6 @@
 from ast import AST, AsyncFunctionDef, ClassDef, FunctionDef, parse
 from functools import singledispatchmethod
 from typing import Any, Self
-from webbrowser import open_new
 
 ##############################################################################
 # Rich imports.
@@ -25,6 +24,7 @@ from textual_enhanced.binding import HelpfulBinding
 ##############################################################################
 # Local imports.
 from ..messages import LocationChanged
+from ..python_docs import visit_ast
 from ..types import Location
 
 ##############################################################################
@@ -281,9 +281,7 @@ class AbstractSyntaxTree(Tree[Any]):
     def action_about(self) -> None:
         """Handle a request to view the AST item's documentation."""
         if self.cursor_node and (ast := self._closest_ast(self.cursor_node)):
-            open_new(
-                f"https://docs.python.org/3/library/ast.html#ast.{ast.__class__.__name__}"
-            )
+            visit_ast(ast)
 
 
 ### ast.py ends here

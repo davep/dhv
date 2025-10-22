@@ -30,6 +30,7 @@ from ..commands import (
     ChangeCodeTheme,
     LoadFile,
     NewCode,
+    OpcodeCounts,
     ShowASTOnly,
     ShowDisassemblyAndAST,
     ShowDisassemblyOnly,
@@ -41,6 +42,7 @@ from ..data import load_configuration, update_configuration
 from ..messages import LocationChanged, SetCodeTheme
 from ..providers import CodeThemeCommands, MainCommands
 from ..widgets import AbstractSyntaxTree, Disassembly, Source
+from .opcode_counts import OpcodeCountsView
 
 
 ##############################################################################
@@ -92,6 +94,7 @@ class Main(EnhancedScreen[None]):
         # Everything else.
         ChangeCodeTheme,
         ChangeTheme,
+        OpcodeCounts,
         SwitchLayout,
         ToggleOffsets,
         ToggleOpcodes,
@@ -289,6 +292,11 @@ class Main(EnhancedScreen[None]):
     def action_change_code_theme_command(self) -> None:
         """Change the theme used for the code editor."""
         self.show_palette(CodeThemeCommands)
+
+    def action_opcode_counts_command(self) -> None:
+        """Show the count of opcodes in the current code."""
+        if self.code is not None and not self.query_one(Disassembly).error:
+            self.app.push_screen(OpcodeCountsView(self.code))
 
     @on(SetCodeTheme)
     def _set_code_theme(self, message: SetCodeTheme) -> None:
