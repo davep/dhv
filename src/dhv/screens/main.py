@@ -295,8 +295,8 @@ class Main(EnhancedScreen[None]):
 
     def action_opcode_counts_command(self) -> None:
         """Show the count of opcodes in the current code."""
-        if self.code is not None and not self.query_one(Disassembly).error:
-            self.app.push_screen(OpcodeCountsView(self.code))
+        if not self.query_one(Disassembly).error:
+            self.app.push_screen(OpcodeCountsView(self.code or ""))
 
     @on(SetCodeTheme)
     def _set_code_theme(self, message: SetCodeTheme) -> None:
