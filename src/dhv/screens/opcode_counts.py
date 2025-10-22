@@ -96,14 +96,14 @@ class OpcodeCountsView(ModalScreen[None]):
         Returns:
             The count of operations within the code.
         """
-        count = Counter(instruction.opname for instruction in operations)
-        for operation in operations:
-            if isinstance(operation.argval, CodeType):
-                try:
-                    count += cls._operation_count(Bytecode(operation.argval))
-                except SyntaxError:
-                    pass
-        return count
+        return sum(
+            [
+                cls._operation_count(Bytecode(instruction.argval))
+                for instruction in operations
+                if isinstance(instruction.argval, CodeType)
+            ],
+            Counter(instruction.opname for instruction in operations),
+        )
 
     def on_mount(self) -> None:
         """Populate the dialog once the DOM is loaded."""
