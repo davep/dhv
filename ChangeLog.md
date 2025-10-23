@@ -6,6 +6,7 @@
 
 - Simplified and optimised the `Disassembly` widget. While not instant, it
   now populates a wee bit faster.
+  ([#41](https://github.com/davep/dhv/pull/41))
 
 ## v0.8.1
 
