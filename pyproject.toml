@@ -1,6 +1,6 @@
 [project]
 name = "dhv"
-version = "0.8.1"
+version = "1.0.0"
 description = "A tool to dive into Python code"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
@@ -25,7 +25,7 @@ keywords = [
     "disassembler",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
