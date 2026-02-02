@@ -2,10 +2,11 @@
 
 ##############################################################################
 # Python imports.
+from collections.abc import Iterator
 from dis import Bytecode, Instruction, opname
 from statistics import median_high
 from types import CodeType
-from typing import Final, Iterator
+from typing import Final
 
 ##############################################################################
 # Rich imports.
