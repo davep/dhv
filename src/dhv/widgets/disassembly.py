@@ -268,16 +268,14 @@ class Disassembly(EnhancedOptionList):
             )
 
         # Build the line map.
-        line = 0
         self._line_map = (line_map := {})
-        for option in options:
+        for line, option in enumerate(options):
             if (
                 isinstance(option, Operation)
                 and (operation := option.operation).starts_line
                 and operation.line_number is not None
             ):
                 line_map[operation.line_number] = line
-            line += 1
 
     def _watch_code(self) -> None:
         """React to the code being changed."""
