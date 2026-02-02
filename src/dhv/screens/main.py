@@ -146,7 +146,7 @@ class Main(EnhancedScreen[None]):
         """
         try:
             self.query_one(Source).load_text(source.read_text())
-        except IOError as error:
+        except OSError as error:
             self.notify(str(error), title=f"Unable to load {source}", severity="error")
             return
         with update_configuration() as config:
