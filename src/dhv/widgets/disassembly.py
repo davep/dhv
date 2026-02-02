@@ -333,18 +333,19 @@ class Disassembly(EnhancedOptionList):
                 self.highlighted = self.get_option_index(
                     hex(id(message.option.operation.argval))
                 )
-            elif message.option.operation.jump_target is not None:
-                if jump_id := Operation.make_id(
+            elif (message.option.operation.jump_target is not None) and (
+                jump_id := Operation.make_id(
                     message.option.operation.jump_target, message.option.code
-                ):
-                    try:
-                        self.highlighted = self.get_option_index(jump_id)
-                    except OptionDoesNotExist:
-                        self.notify(
-                            "Unable to find that jump location",
-                            title="Error",
-                            severity="error",
-                        )
+                )
+            ):
+                try:
+                    self.highlighted = self.get_option_index(jump_id)
+                except OptionDoesNotExist:
+                    self.notify(
+                        "Unable to find that jump location",
+                        title="Error",
+                        severity="error",
+                    )
 
     def goto_first_instruction_on_line(self, line: int) -> None:
         """Go to the first instruction for a given line number.
